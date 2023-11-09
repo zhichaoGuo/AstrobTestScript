@@ -19,7 +19,7 @@ def draw_chart(mem_time: list, mem: list, cpu_time: list, cpu_apk: list, cpu_cor
     plt.legend(loc='upper left')
     # 创建次坐标轴
     ax2 = plt.twinx()
-    ax2.set_ylim(0,max(mem)+50)
+    ax2.set_ylim(0, max(mem) + 50)
     # 在次坐标轴上绘制折线图
     ax2.plot(mem_time, mem, 'b-', label='memory')
     # 设置次坐标轴的标签和颜色
@@ -48,13 +48,16 @@ def load_cpu_data(cpu_file: str) -> (list, list, list):
             # 去掉行尾的换行符
             line = line.strip()
             # 用逗号分隔时间和占用率
-            t, u = line.split("      ")
-            # 将时间和占用率转换为浮点数，并添加到对应的列表中
-            pattern = r"\d+\.\d+%|\d+%"
-            _, pre_cpu_apk, pre_cpu_core = re.findall(pattern, u)
-            time.append(mdates.datestr2num(t))
-            cpu_apk.append(float(pre_cpu_apk.replace("%", "")))
-            cpu_core.append(float(pre_cpu_core.replace("%", "")))
+            try:
+                t, u = line.split("      ")
+                # 将时间和占用率转换为浮点数，并添加到对应的列表中
+                pattern = r"\d+\.\d+%|\d+%"
+                _, pre_cpu_apk, pre_cpu_core = re.findall(pattern, u)
+                time.append(mdates.datestr2num(t))
+                cpu_apk.append(float(pre_cpu_apk.replace("%", "")))
+                cpu_core.append(float(pre_cpu_core.replace("%", "")))
+            except ValueError as err:
+                print('cpu info wrong:%s' % line)
     # 返回时间和占用率的列表
     return time, cpu_apk, cpu_core
 
@@ -71,12 +74,6 @@ def load_mem_data(mem_file: str) -> (list, list):
             # 用逗号分隔时间和占用率
             t, u = line.split("      ")
             time.append(mdates.datestr2num(t))
-            mem.append(float(u)/1024)
+            mem.append(float(u) / 1024)
     # 返回时间和占用率的列表
     return time, mem
-
-
-if __name__ == '__main__':
-    cpu_time, cpu_apk, cpu_core = load_cpu_data("TB9_cpu_2023-10-13_10-08-33.log")
-    mem_time, mem = load_mem_data("TB9_Pss_2023-10-13_10-08-33.log")
-    draw_chart(mem_time, mem, cpu_time, cpu_apk, cpu_core, "TB9_2023-10-13_10-08-33.png")

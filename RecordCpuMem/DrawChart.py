@@ -62,8 +62,8 @@ def write_log(pss_f_name: str, cpu_f_name: str, interval_time: int = 5):
 
 if __name__ == '__main__':
     time_now = time.strftime('%Y-%m-%d_%H-%M-%S', time.localtime(time.time()))
-    pss_file_name = os.path.join(os.path.abspath('.'), 'TB9_Pss_' + time_now + '.log')
-    cpu_file_name = os.path.join(os.path.abspath('.'), 'TB9_cpu_' + time_now + '.log')
+    pss_file_name = os.path.join(os.path.abspath('.'), f'TB9_{time_now}_Pss.log')
+    cpu_file_name = os.path.join(os.path.abspath('.'), f'TB9_{time_now}_cpu.log')
     try:
         t = threading.Thread(target=write_log, args=(pss_file_name, cpu_file_name))
         t.setDaemon(True)
@@ -72,9 +72,11 @@ if __name__ == '__main__':
         time.sleep(60)
     except KeyboardInterrupt:
         print('正在停止！')
+    RUNNING = False
+    time.sleep(6)
     # draw chart
     cpu_time, cpu_apk, cpu_core = load_cpu_data(cpu_file_name)
     mem_time, mem = load_mem_data(pss_file_name)
     draw_chart(mem_time, mem, cpu_time, cpu_apk, cpu_core, f"TB9_{time_now}.png")
-    RUNNING = False
-    time.sleep(6)
+
+

@@ -1,13 +1,15 @@
 """
 转换翻译文件的脚本
 """
+
+
 def load_old_dat(dat_file: str):
     with open(dat_file, 'r', encoding='utf-8') as f:
         f_header = ''
         f_body = {}
         first_line = True
         for line in f:
-            if first_line:
+            if first_line:  # 首行为65001
                 f_header = line
                 first_line = False
             else:
