@@ -65,6 +65,20 @@ class PathUtils:
                 r.append(zip_full_path)
         return r
 
+    @staticmethod
+    def get_path_all_dat(path: str) -> list:
+        """
+        返回path下.dat文件的绝对路径的列表
+        :param path: 绝对路径
+        :return: .dat文件的绝对路径的列表
+        """
+        r = []
+        for zip_path in os.listdir(path):
+            zip_full_path = os.path.join(path, zip_path)
+            if os.path.isfile(zip_full_path) and zip_full_path[-4:].lower() == '.dat':
+                r.append(zip_full_path)
+        return r
+
 
 class ZipUtils:
     @staticmethod
