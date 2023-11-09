@@ -1,0 +1,231 @@
+<Place
+    xmlns="http://places.maps.here.com/pds">
+	<LocationList>
+        <Location primary="true" locationId="NT_.U7HwXkOgKDWt0vw6.I5MB_3MD" type="MAIN" supplier="BLENDED" label="Höttinger Au 73, 6020 Innsbruck, Österreich">
+            <Address>
+                <UnparsedList>
+                    <Unparsed languageCode="de" defaultLanguage="true">Höttinger Au 73, 6020 Innsbruck, Österreich</Unparsed>
+                </UnparsedList>
+                <ParsedList>
+                    <Parsed languageCode="de" defaultLanguage="true">
+                        <StreetName>
+                            <BaseName>Höttinger Au</BaseName>
+                        </StreetName>
+                        <FullStreetName>Höttinger Au</FullStreetName>
+                        <HouseNumber>73</HouseNumber>
+                        <CountryCode>AUT</CountryCode>
+                        <PostalCode>6020</PostalCode>
+                        <Admin>
+                            <AdminLevel>
+                                <Level2>Tirol</Level2>
+                                <Level3>Innsbruck-Stadt</Level3>
+                                <Level4>Innsbruck</Level4>
+                                <Level5>Innsbruck</Level5>
+                            </AdminLevel>
+                        </Admin>
+                    </Parsed>
+                </ParsedList>
+            </Address>
+            <GeoPositionList>
+                <GeoPosition type="ROUTING">
+                    <Latitude>47.26496</Latitude>
+                    <Longitude>11.37374</Longitude>
+                </GeoPosition>
+                <GeoPosition type="DISPLAY">
+                    <Latitude>47.264888</Latitude>
+                    <Longitude>11.373445</Longitude>
+                </GeoPosition>
+            </GeoPositionList>
+            <MapReferenceList>
+                <MapReference>
+                    <Map version="Q3/2023">
+                        <Link linkPvid="1228135450">
+                            <Side>left</Side>
+                            <Spot>22</Spot>
+                        </Link>
+                        <PointAddressPvid>160995578</PointAddressPvid>
+                    </Map>
+                </MapReference>
+            </MapReferenceList>
+            <AdditionalData key="LinkFunctionalClass">3</AdditionalData>
+            <AdditionalData key="CountryName">Österreich</AdditionalData>
+            <AdditionalData key="StateName">Tirol</AdditionalData>
+            <AdditionalData key="CountyName">Innsbruck-Stadt</AdditionalData>
+            <AdditionalData key="addressingLinkPVID">1228135450</AdditionalData>
+            <AdditionalData key="addressingRoadLinkPVID">547011976</AdditionalData>
+            <AdditionalData key="RoadLinkId">547011976</AdditionalData>
+            <AdditionalData key="AdminLevel4Id">20136828</AdditionalData>
+            <AdditionalData key="AdminLevel3Id">20136827</AdditionalData>
+            <AdditionalData key="AdminLevel2Id">20136826</AdditionalData>
+            <AdditionalData key="CountryId">20128885</AdditionalData>
+            <AdditionalData key="Relevance">1.0</AdditionalData>
+            <AdditionalData key="MatchLevel">houseNumber</AdditionalData>
+            <AdditionalData key="MatchType">pointAddress</AdditionalData>
+            <AdditionalData key="MatchCode">exact</AdditionalData>
+            <AdditionalData key="Distance">28.5</AdditionalData>
+            <AdditionalData key="MatchQuality-City">1.0</AdditionalData>
+            <AdditionalData key="MatchQuality-Street">1.0</AdditionalData>
+            <AdditionalData key="MatchQuality-HouseNumber">1.0</AdditionalData>
+            <AdditionalData key="MatchQuality-PostalCode">1.0</AdditionalData>
+            <AdditionalData key="MapPostalCode">6020</AdditionalData>
+            <AdditionalData key="RegionId">A1</AdditionalData>
+            <AdditionalData key="MapId">WEU 23118</AdditionalData>
+        </Location>
+    </LocationList>
+	<Identity lastUpdatedTimeStamp="2023-04-18T12:45:39.430Z" isDeleted="false">
+        <PlaceId>040u22hf-bbe89b5ccfa14b37abab07c423fd3ef4</PlaceId>
+        <QualityLevel>2</QualityLevel>
+    </Identity>
+    <Content>
+        <Base>
+            <NameList>
+                <Name primaryFlag="true">
+                    <TextList>
+                        <Text>
+                            <BaseText type="OFFICIAL" languageCode="de" default="true">Smatrics</BaseText>
+                        </Text>
+                    </TextList>
+                </Name>
+            </NameList>
+            <CategoryList>
+                <Category categorySystem="navteq-lcms" primaryFlag="true">
+                    <CategoryId>700-7600-0322</CategoryId>
+                    <CategoryName>
+                        <Text languageCode="en">EV Charging Station</Text>
+                    </CategoryName>
+                    <Description>
+                        <Text languageCode="en">A singular charging station where an electric vehicle may recharge either for free or for a fee.</Text>
+                    </Description>
+                    <AdditionalData key="confidence">HIGH</AdditionalData>
+                </Category>
+                <Category categorySystem="navteq-poi">
+                    <CategoryId>9598</CategoryId>
+                    <CategoryName>
+                        <Text languageCode="en">EV Charging Station</Text>
+                    </CategoryName>
+                </Category>
+            </CategoryList>
+            <ContactList>
+                <Contact type="PHONE" preferred="true">
+                    <ContactString>+435031351855</ContactString>
+                    <AdditionalContactInfo>
+                        <StandardNumber>+435031351855</StandardNumber>
+                        <AreaCode>5</AreaCode>
+                        <LocalNumber>031351855</LocalNumber>
+                        <CountryCode>43</CountryCode>
+                        <AdditionalData key="PhonePrefix">0</AdditionalData>
+                    </AdditionalContactInfo>
+                </Contact>
+            </ContactList>
+        </Base>
+        <Extended>
+            <HoursOfOperationList>
+                <HoursOfOperation>
+                    <Open24x7Flag>false</Open24x7Flag>
+                </HoursOfOperation>
+                <HoursOfOperation>
+					<OperatingTimeList>
+                        <OperatingTime dayOfweek="SUNDAY">
+                            <OpeningTime>09:00:00</OpeningTime>
+                            <ClosingTime>24:00:00</ClosingTime>
+                        </OperatingTime>
+                        <OperatingTime dayOfweek="MONDAY">
+                            <OpeningTime>09:00:00</OpeningTime>
+                            <ClosingTime>24:00:00</ClosingTime>
+                        </OperatingTime>
+                        <OperatingTime dayOfweek="TUESDAY">
+                            <OpeningTime>09:00:00</OpeningTime>
+                            <ClosingTime>24:00:00</ClosingTime>
+                        </OperatingTime>
+                        <OperatingTime dayOfweek="WEDNESDAY">
+                            <OpeningTime>09:00:00</OpeningTime>
+                            <ClosingTime>24:00:00</ClosingTime>
+                        </OperatingTime>
+                        <OperatingTime dayOfweek="THURSDAY">
+                            <OpeningTime>09:00:00</OpeningTime>
+                            <ClosingTime>24:00:00</ClosingTime>
+                        </OperatingTime>
+                        <OperatingTime dayOfweek="FRIDAY">
+                            <OpeningTime>09:00:00</OpeningTime>
+                            <ClosingTime>24:00:00</ClosingTime>
+                        </OperatingTime>
+                        <OperatingTime dayOfweek="SATURDAY">
+                            <OpeningTime>09:00:00</OpeningTime>
+                            <ClosingTime>24:00:00</ClosingTime>
+                        </OperatingTime>
+                    </OperatingTimeList>
+                </HoursOfOperation>
+            </HoursOfOperationList>
+            <PaymentMethodList>
+				<Cash acceptCash="true"/>
+                <CreditCard acceptCreditCard="false"/>
+                <Note>
+                    <Text languageCode="en" type="OFFICIAL">Electronic Purse Payment Option Available</Text>
+                </Note>
+            </PaymentMethodList>
+        </Extended>
+        <Rich>
+            <AdditionalAttributeList>
+                <AdditionalAttribute attributeType="ACCESS">
+                    <Attribute key="Private">false</Attribute>
+                </AdditionalAttribute>
+                <AdditionalAttribute attributeType="ELECTRIC_CHARGE">
+                    <Attribute key="Reservable">false</Attribute>
+                    <Attribute key="Price">Pay</Attribute>
+                    <Attribute key="TotalNumberOfPorts">2</Attribute>
+                </AdditionalAttribute>
+                <AdditionalAttribute attributeType="PORT">
+                    <Attribute key="ConnectorType">IEC 62196-2 type 2 (Mennekes)</Attribute>
+                    <Attribute key="NumberOfPorts">2</Attribute>
+                    <Attribute key="Voltage">200-240V AC</Attribute>
+                    <Attribute key="Current">32A</Attribute>
+                    <Attribute key="FixedCable">false</Attribute>
+                    <Attribute key="Mode">3</Attribute>
+                    <Attribute key="CustomerChargeLevel">3</Attribute>
+                    <Attribute key="CustomerConnectorNames">AC EV connector (Mennekes - type 2)</Attribute>
+                    <Attribute key="Phase">3</Attribute>
+                    <Attribute key="ChargeCapacity">200-240VAC, 3-phase at max. 32 A</Attribute>
+                    <Attribute key="MaxPowerLevel">22.00</Attribute>
+                    <Attribute key="ConnectorTypeID">31</Attribute>
+                </AdditionalAttribute>
+                <AdditionalAttribute attributeType="QUALITY_SCORING">
+                    <Attribute key="isPlace">0.3</Attribute>
+                    <Attribute key="isPlace_quality_level">2</Attribute>
+                    <Attribute key="isOpen">0.3</Attribute>
+                    <Attribute key="isOpen_quality_level">2</Attribute>
+                    <Attribute key="reality_score_quality_level">2</Attribute>
+                    <Attribute key="reality_score">0.3</Attribute>
+                    <Attribute key="modelVersion">2.17</Attribute>
+                    <Attribute key="isNameCorrect">0.9</Attribute>
+                    <Attribute key="isNameCorrect_quality_level">5</Attribute>
+                    <Attribute key="isAddressCorrect">1.0</Attribute>
+                    <Attribute key="isAddressCorrect_quality_level">5</Attribute>
+                    <Attribute key="isPhoneCorrect">0.76</Attribute>
+                    <Attribute key="isPhoneCorrect_quality_level">5</Attribute>
+                    <Attribute key="overallScore">2</Attribute>
+                </AdditionalAttribute>
+                <AdditionalAttribute attributeType="AddressPhonemes">
+                    <Attribute key="Höttinger Au" languageCode="de" keyLanguageCode="de" default="true">"h9|tIN|6 "?aU</Attribute>
+                </AdditionalAttribute>
+                <AdditionalAttribute attributeType="AddressPhonemes">
+                    <Attribute key="Höttinger Au" languageCode="de" keyLanguageCode="de" default="true">"h9|tIN|6 "?aU</Attribute>
+                </AdditionalAttribute>
+                <AdditionalAttribute attributeType="AddressPhonemes">
+                    <Attribute key="Innsbruck-Stadt" languageCode="de" keyLanguageCode="de" default="true">"?Ins|brUk "Stat</Attribute>
+                </AdditionalAttribute>
+                <AdditionalAttribute attributeType="AddressPhonemes">
+                    <Attribute key="Innsbruck" languageCode="de" keyLanguageCode="de" default="true">"?Ins|brUk</Attribute>
+                </AdditionalAttribute>
+                <AdditionalAttribute attributeType="AddressPhonemes">
+                    <Attribute key="Innsbruck" languageCode="de" keyLanguageCode="de" default="true">"?Ins|brUk</Attribute>
+                </AdditionalAttribute>
+                <AdditionalAttribute attributeType="AddressPhonemes">
+                    <Attribute key="Tirol" languageCode="de" keyLanguageCode="de" default="true">ti:|"ro:l</Attribute>
+                </AdditionalAttribute>
+                <AdditionalAttribute attributeType="NamePhonemes">
+                    <Attribute key="Smatrics" languageCode="de" keyLanguageCode="de" default="true">"Sma:|trIks</Attribute>
+                </AdditionalAttribute>
+            </AdditionalAttributeList>
+        </Rich>
+    </Content>
+</Place>

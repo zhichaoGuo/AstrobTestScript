@@ -1,0 +1,6 @@
+sqlserver:
+  host: 192.168.1.109
+  port: 1433
+  user: sa
+  password: astrob
+  database: HERE_APAC_S231R2
