@@ -23,19 +23,19 @@ def load_new_translate(txt_file: str):
         f_return = {}
         for line in f:
             f_index, f_line = line.split("=")
-            f_return[f_index] = f_line.replace("\n", "")
+            f_return[f_index] = f_line.replace("\n", "").split(",")[1]
     return f_return
 
 
 if __name__ == '__main__':
-    header, body = load_old_dat('LangRUS.dat')
-    new_translate = load_new_translate('newRUS.txt')
+    header, body = load_old_dat('LangTHA.dat')
+    new_translate = load_new_translate('newTHA.txt')
     for index in new_translate.keys():
         if index in body.keys():
             body[index] = body[index].split(',')[0] + "," + f'"{new_translate[index]}"\n'
         else:
             print("没有匹配项：%s" % index)
-    with open('newLangRus.dat', 'w', encoding='utf-8') as f:
+    with open('newLangTHA.dat', 'w', encoding='utf-8') as f:
         f.write(header)
         for index in body.keys():
             f.write(index + "=" + body[index])
