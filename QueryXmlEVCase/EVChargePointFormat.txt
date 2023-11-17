@@ -1,0 +1,91 @@
+<POI>
+      <Action>Add</Action>
+      <SupplierID>3</SupplierID>
+      <Identity>
+         <POI_Entity_ID>MmRkOGMyYTItNDZhOS0xMWVlLWE4YjUtNDIwMTBhYTQwZmMw</POI_Entity_ID>
+         <Names>
+            <POI_Name Language_Code="THA" Type="Official">
+               <Text>จุดชาร์จแบตรถยนต์ไฟฟ้า</Text>
+               <Text Trans_Type="THE">Chut Chage Bae Ton Thayon Faifa</Text>
+            </POI_Name>
+         </Names>
+         <Category_ID Type="NT">9598</Category_ID>
+         <Product_Type>12</Product_Type>
+      </Identity>
+      <Locations>
+         <Location Type="Entry Point">
+            <Address>
+               <ParsedAddress>
+                  <ParsedStreetAddress>
+                     <Address_Number>
+                        <House_Number>37</House_Number>
+                     </Address_Number>
+                     <ParsedStreetName>
+                        <StreetName Language_Code="THA">กัลปพฤกษ์</StreetName>
+                        <StreetType Attached="false" Before="true" Language_Code="THA">ถนน</StreetType>
+                     </ParsedStreetName>
+                  </ParsedStreetAddress>
+                  <ParsedPlace>
+                     <PlaceLevel2 Language_Code="THA">กรุงเทพมหานคร</PlaceLevel2>
+                     <PlaceLevel2 Trans_Type="THE">Bangkok</PlaceLevel2>
+                     <PlaceLevel3 Language_Code="THA">ภาษีเจริญ</PlaceLevel3>
+                     <PlaceLevel3 Trans_Type="THE">Phasi Charoen</PlaceLevel3>
+                     <PlaceLevel4 Language_Code="THA">บางหว้า</PlaceLevel4>
+                     <PlaceLevel4 Trans_Type="THE">Bang Wa</PlaceLevel4>
+                  </ParsedPlace>
+                  <PostalCode>
+                     <NT_Postal>10160</NT_Postal>
+                  </PostalCode>
+                  <CountryCode>THA</CountryCode>
+               </ParsedAddress>
+            </Address>
+            <GeoPosition>
+               <Latitude>13.7094602</Latitude>
+               <Longitude>100.4502465</Longitude>
+            </GeoPosition>
+            <MapLinkID>
+               <LinkID>1105334927</LinkID>
+               <Side_of_Street>R</Side_of_Street>
+               <Percent_from_RefNode>74</Percent_from_RefNode>
+            </MapLinkID>
+            <Confidence>
+               <Match_Level>GeoPoint</Match_Level>
+            </Confidence>
+         </Location>
+         <Location Type="Display Location">
+            <GeoPosition>
+               <Latitude>13.709462</Latitude>
+               <Longitude>100.450244</Longitude>
+            </GeoPosition>
+         </Location>
+      </Locations>
+      <Products_Services>
+         <Fuels>
+            <Electric Pay="true" TotalNumberOfConnectors="2" Reservable="false">
+               <ConnectorType>
+                  <ConnectorTypeName>IEC 62196-3 type 2 combo (Mennekes)</ConnectorTypeName>
+                  <CustomerConnectorName>AC/DC combo (Mennekes - type 2)</CustomerConnectorName>
+                  <NumberOfConnectors>2</NumberOfConnectors>
+                  <ChargeMode>4</ChargeMode>
+                  <FixedCable>true</FixedCable>
+                  <CustomerChargeLevel>3</CustomerChargeLevel>
+                  <MaxPowerLevel>50.0</MaxPowerLevel>
+                  <Voltage>
+                     <Min>400</Min>
+                     <Max>400</Max>
+                  </Voltage>
+                  <Current>125</Current>
+                  <NumberOfPhases>3</NumberOfPhases>
+                  <Flow>DC</Flow>
+               </ConnectorType>
+            </Electric>
+         </Fuels>
+         <Open_24_Hours>false</Open_24_Hours>
+      </Products_Services>
+      <Details>
+         <Private_Access>false</Private_Access>
+         <Descriptions>
+            <Description Type="Electric" Language_Code="ENG">Charging at this EVSE can be authorized with a RFID token</Description>
+         </Descriptions>
+      </Details>
+   </POI>

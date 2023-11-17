@@ -73,6 +73,7 @@ class EVInfo:
             if node_parsed.get('defaultLanguage') == 'true':
                 break
 
+
         # _<LocationList>_____<Location>____<GeoPositionList>__________________________________
 
         nodes_GeoPosition = node_location.find(f'{tag}GeoPositionList').findall(f'{tag}GeoPosition')
