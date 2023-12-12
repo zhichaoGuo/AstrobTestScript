@@ -27,7 +27,7 @@ def query_country(db: SqlServer, iso_country_code: list = None, language_code: l
     for result in country_query_results:
         if result.ISO_COUNTRY_CODE in data.keys():
             data[result.ISO_COUNTRY_CODE].load_lange(result)
-            LogUtils.debug("ADD CountryAllLange's lange for iso country code:%s-%s" % (
+            LogUtils.warning("ADD CountryAllLange's lange for iso country code:%s-%s" % (
                 result.ISO_COUNTRY_CODE, result.NAME_LANGUAGE))
         else:
             data[result.ISO_COUNTRY_CODE] = CountryAllLange(result)
@@ -58,8 +58,12 @@ def query_city(db: SqlServer, iso_country_code: str, language_code: list):
     """
     data = {}
     city_query_results = db.query(QueryCity(iso_country_code=iso_country_code, language_code=language_code))
-    LogUtils.info("Query City for country %s ,With language:%s, result count:%s" % (
-        iso_country_code, language_code, len(city_query_results)))
+    if len(city_query_results) < 6:
+        LogUtils.warning("Query City for country %s ,With language:%s, result count:%s" % (
+            iso_country_code, language_code, len(city_query_results)))
+    else:
+        LogUtils.info("Query City for country %s ,With language:%s, result count:%s" % (
+            iso_country_code, language_code, len(city_query_results)))
     for result in city_query_results:
         if result.NAMED_PLACE_ID in data.keys():
             data[result.NAMED_PLACE_ID].load_lange(result)
@@ -328,17 +332,17 @@ def main(sql_db_name: str, iso_country_code: list = None, language_code: list = 
     dbs = SqlServer(**load_config().get("sqlserver"), database=sql_db_name)
     LogUtils.info("Connect to sql server: %s" % load_config().get("sqlserver"))
     country_data = query_country(dbs, iso_country_code=iso_country_code, language_code=language_code)
-    ObjUtils.save_obj(country_data, work_dir)
+    ObjUtils.save_obj(country_data, work_dir, "country_data")
     city_data = query_city_by_country(dbs, country_data)
-    ObjUtils.save_obj(city_data, work_dir)
+    ObjUtils.save_obj(city_data, work_dir, "city_data")
     poi_data = query_poi_by_city(dbs, city_data)
-    ObjUtils.save_obj(poi_data, work_dir)
+    ObjUtils.save_obj(poi_data, work_dir, "poi_data")
     ptaddr_data = query_ptaddr_by_city(dbs, city_data)
-    ObjUtils.save_obj(ptaddr_data, work_dir)
+    ObjUtils.save_obj(ptaddr_data, work_dir, "ptaddr_data")
     dbs.close()
     write_excel(save_path=f'./{work_dir}', here_db_name=sql_db_name, country_data=country_data, city_data=city_data,
                 poi_data=poi_data, ptaddr_data=ptaddr_data)
-    shutil.copy(os.path.join(".", "QueryDateCase.log"), f"./{work_dir}")
+    shutil.copy(os.path.join(".", "QueryDataCase.log"), f"./{work_dir}")
 
 
 def debug(debug_dir: str):
@@ -353,10 +357,11 @@ def debug(debug_dir: str):
         ptaddr_data = pickle.load(f)
     write_excel(save_path=f'./{debug_dir}_debug', here_db_name="debug", country_data=country_data,
                 city_data=city_data, poi_data=poi_data, ptaddr_data=ptaddr_data)
-    shutil.copy(os.path.join(".", "QueryDateCase.log"), f"./{debug_dir}_debug")
+    shutil.move(os.path.join(".", "QueryDateCase.log"), f"./{debug_dir}_debug")
+
 
 
 if __name__ == '__main__':
     # main("HERE_MEA_S231R2", iso_country_code=["SAU"], language_code=["ARA", "ENG"])
-    main("HERE_EEU_S231R2", iso_country_code=["RUS"])
-    # main("HERE_EEU_S231R2")
+    # main("HERE_EEU_S231R2", iso_country_code=["RUS"])
+    main("HERE_EEU_S231R2")

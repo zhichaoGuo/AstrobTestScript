@@ -187,7 +187,7 @@ def load_config():
 
 class ObjUtils:
     @staticmethod
-    def save_obj(save_obj: object, save_path: str):
-        with open(os.path.join(save_path, f"{save_obj.__class__.__name__}.pkl"), 'wb') as _:
-            LogUtils.info(f"SAVE obj:{save_obj.__class__.__name__} to %s" % save_path)
+    def save_obj(save_obj: object, save_path: str,save_name:str):
+        with open(os.path.join(save_path, f"{save_name}.pkl"), 'wb') as _:
+            LogUtils.info(f"SAVE obj:{save_name}.pkl to %s" % save_path)
             pickle.dump(save_obj, _)
