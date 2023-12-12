@@ -79,11 +79,12 @@ class EVChargePoint:
 
 
 def get_name(ele: Element):
-    for node in ele.findall('POI_Name'):
-        if node.get('Type') == 'Official':
-            for node_text in node.findall('Text'):
-                if not node_text.get('Trans_Type'):
-                    return node_text.text
+    if ele:
+        for node in ele.findall('POI_Name'):
+            if node.get('Type') == 'Official':
+                for node_text in node.findall('Text'):
+                    if not node_text.get('Trans_Type'):
+                        return node_text.text
     return ''
 
 

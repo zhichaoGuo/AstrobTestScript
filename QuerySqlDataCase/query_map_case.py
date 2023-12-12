@@ -3,8 +3,10 @@ import time
 import openpyxl
 from openpyxl.styles import PatternFill
 
-from DataInfo import CountryInfo, CityInfo, PoiInfo, PtaddrInfo, CountryInfos, CityInfos, PoiInfos, PtaddrInfos
-from QueryScript import QueryAllCountry, QueryAllCity, QueryCapital, QueryAllPoi, QueryAllPtaddr, QueryTotal, QueryLevel
+from DataInfo import CountryInfo, CityInfo, PoiInfo, PtaddrInfo, CountryInfos, CityInfos, PoiInfos, PtaddrInfos, \
+    CountryAllLange
+from QueryScript import QueryAllCountry, QueryAllCity, QueryCapital, QueryAllPoi, QueryAllPtaddr, QueryTotal, \
+    QueryLevel, QueryCountry
 from Utils import load_config, SqlServer, LogUtils
 
 
@@ -26,6 +28,9 @@ def query_all_country(db: SqlServer, iso_county_code: list = None, default_lang:
                 cur_country_mult_lang.load_other_language(cur_country)
         ret.append(cur_country_mult_lang)
     return ret
+
+
+
 
 
 def query_all_city(db: SqlServer, country: CountryInfo, default_language: str = 'ENG', mult_language: list = []):
@@ -109,7 +114,7 @@ def write_excel(save_path: str, country_data, city_data=None, poi_data=None, pta
     cur_col_index = 1
     # 设置第一行标题
     for attr in CountryInfo.AllAttr:
-        cur_sheet.cell(cur_row_index, cur_col_index, attr).fill=fill_country_header
+        cur_sheet.cell(cur_row_index, cur_col_index, attr).fill = fill_country_header
         cur_col_index += 1
     cur_row_index += 1
     for cur_country_infos in country_data:
@@ -200,7 +205,8 @@ def write_excel(save_path: str, country_data, city_data=None, poi_data=None, pta
                                 cur_col_index += 1
                             # 填poi信息
                             for attr in PoiInfo.AllAttr:
-                                cur_sheet.cell(cur_row_index, cur_col_index, getattr(cur_poi_info, attr)).fill = fill_poi_body
+                                cur_sheet.cell(cur_row_index, cur_col_index,
+                                               getattr(cur_poi_info, attr)).fill = fill_poi_body
                                 cur_col_index += 1
                             cur_row_index += 1
         # ptaddr分页
@@ -251,7 +257,8 @@ def write_excel(save_path: str, country_data, city_data=None, poi_data=None, pta
                                 cur_col_index += 1
                             # 填ptaddr信息
                             for attr in PtaddrInfo.AllAttr:
-                                cur_sheet.cell(cur_row_index, cur_col_index, getattr(cur_ptaddr_info, attr)).fill = fill_ptaddr_body
+                                cur_sheet.cell(cur_row_index, cur_col_index,
+                                               getattr(cur_ptaddr_info, attr)).fill = fill_ptaddr_body
                                 cur_col_index += 1
                             cur_row_index += 1
     # 保存工作表
@@ -301,4 +308,7 @@ def query_map_info(iso_country_code: list = None, default_lang: str = 'ENG', mul
 
 
 if __name__ == '__main__':
-    query_map_info(iso_country_code=['THA'], default_lang='THA')
+    # query_map_info(iso_country_code=['RUS'], default_lang='RUS')
+    db = SqlServer(**load_config().get("sqlserver"))
+    query_country(db, iso_country_code=['RUS', 'POL'], language_code=['ENG', 'CHI'])
+    db.close()

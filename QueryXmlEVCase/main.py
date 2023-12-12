@@ -83,8 +83,8 @@ def write_excel(count_data: dict, write_data: dict, save_name:str):
 
 
 if __name__ == '__main__':
-    ev_data_path = 'E:\HERE EV Charge Points Static Asia Pacific S231_G0'
-    excel_file_name = 'APAC_231G0_20231117.xlsx'
+    ev_data_path = 'E:\HERE EV Charge Points Static Europe Release 1 S231_G3'
+    excel_file_name = 'EU_231G3_20231117.xlsx'
     all_country_folder = return_all_folder_without_tag(aim_path=ev_data_path, without_tag=['Reference'])
     count = {}
     data = {}

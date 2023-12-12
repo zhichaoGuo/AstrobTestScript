@@ -37,7 +37,7 @@ def draw_chart(mem_time: list, mem: list, cpu_time: list, cpu_apk: list, cpu_cor
     plt.savefig(png_name)
 
 
-def load_cpu_data(cpu_file: str) -> (list, list, list):
+def load_cpu_data(cpu_file: str,cpu_number:int=1) -> (list, list, list):
     with open(cpu_file, "r") as f:
         # 创建两个空列表，用于存储时间和占用率
         time = []
@@ -54,8 +54,8 @@ def load_cpu_data(cpu_file: str) -> (list, list, list):
                 pattern = r"\d+\.\d+%|\d+%"
                 _, pre_cpu_apk, pre_cpu_core = re.findall(pattern, u)
                 time.append(mdates.datestr2num(t))
-                cpu_apk.append(float(pre_cpu_apk.replace("%", "")))
-                cpu_core.append(float(pre_cpu_core.replace("%", "")))
+                cpu_apk.append(float(pre_cpu_apk.replace("%", ""))/cpu_number)
+                cpu_core.append(float(pre_cpu_core.replace("%", ""))/cpu_number)
             except ValueError as err:
                 print('cpu info wrong:%s' % line)
     # 返回时间和占用率的列表

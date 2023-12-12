@@ -1,6 +1,7 @@
 import gzip
 import logging
 import os
+import pickle
 
 import pymssql
 import yaml
@@ -180,5 +181,13 @@ class ModelUtils:
 
 
 def load_config():
-    config = yaml.safe_load(open(os.path.join(os.path.dirname(__file__),'config.yml'), 'r'))
+    config = yaml.safe_load(open(os.path.join(os.path.dirname(__file__), 'config.yml'), 'r'))
     return config
+
+
+class ObjUtils:
+    @staticmethod
+    def save_obj(save_obj: object, save_path: str):
+        with open(os.path.join(save_path, f"{save_obj.__class__.__name__}.pkl"), 'wb') as _:
+            LogUtils.info(f"SAVE obj:{save_obj.__class__.__name__} to %s" % save_path)
+            pickle.dump(save_obj, _)

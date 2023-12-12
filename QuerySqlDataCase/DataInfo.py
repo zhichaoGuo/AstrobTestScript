@@ -6,6 +6,106 @@ class MapDBInfo:
         pass
 
 
+class CountryAllLange:
+    def __init__(self, pre_lange):
+        self.default_lange_obj = pre_lange
+        self.default_lange_code = pre_lange.NAME_LANGUAGE
+        self.all_lange_obj = [self.default_lange_obj]
+
+    def load_lange(self, pre_lange):
+        self.all_lange_obj.append(pre_lange)
+
+    def get_lange(self, lange: str):
+        for obj in self.all_lange_obj:
+            if obj.NAME_LANGUAGE.upper() == lange.upper():
+                return obj
+        return None
+
+    @property
+    def lange_count(self):
+        return len(self.all_lange_obj)
+
+    @property
+    def lange_list(self):
+        _ = []
+        for lange in self.all_lange_obj:
+            if lange.NAME_LANGUAGE not in _:
+                _.append(lange.NAME_LANGUAGE)
+        return _
+
+
+class CityAllLange:
+
+    def __init__(self, pre_lange):
+        self.default_lange_obj = pre_lange
+        self.default_lange_code = pre_lange.NAME_LANGUAGE
+        self.all_lange_obj = [self.default_lange_obj]
+
+    def load_lange(self, pre_lange):
+        self.all_lange_obj.append(pre_lange)
+    def get_lange(self, lange: str):
+        for obj in self.all_lange_obj:
+            if obj.NAME_LANGUAGE.upper() == lange.upper():
+                return obj
+        return None
+    @property
+    def lange_count(self):
+        return len(self.all_lange_obj)
+
+    @property
+    def lange_list(self):
+        _ = []
+        for lange in self.all_lange_obj:
+            if lange.NAME_LANGUAGE not in _:
+                _.append(lange.NAME_LANGUAGE)
+        return _
+
+
+class PoiAllLange:
+
+    def __init__(self, pre_lange):
+        self.default_lange_obj = pre_lange
+        self.default_lange_code = pre_lange.LANGUAGE_POI
+        self.all_lange_obj = [self.default_lange_obj]
+
+    def load_lange(self, pre_lange):
+        self.all_lange_obj.append(pre_lange)
+
+    @property
+    def lange_count(self):
+        return len(self.all_lange_obj)
+
+    @property
+    def lange_list(self):
+        _ = []
+        for lange in self.all_lange_obj:
+            if lange.LANGUAGE_POI not in _:
+                _.append(lange.LANGUAGE_POI)
+        return _
+
+
+class PtaddrAllLange:
+    def __init__(self, pre_lange):
+        self.default_lange_obj = pre_lange
+        self.default_lange_code = pre_lange.Road_language
+        self.all_lange_obj = [self.default_lange_obj]
+
+    def load_lange(self, pre_lange):
+        self.all_lange_obj.append(pre_lange)
+
+    @property
+    def lange_count(self):
+        return len(self.all_lange_obj)
+
+    @property
+    def lange_list(self):
+        _ = []
+        for lange in self.all_lange_obj:
+            if lange.Road_language not in _:
+                _.append(lange.Road_language)
+        return _
+
+
 class CountryInfo:
     # 此处定义Excel表格的内容
     AllAttr = [
@@ -57,6 +157,7 @@ class CountryInfos:
                         "ARA":country_info_ara}
         self default_language_info = country_info_eng
     """
+
     def __init__(self, country_info: CountryInfo):
         self.data = {country_info.NAME_LANGUAGE: country_info}
         self.default_language_info = country_info
@@ -228,5 +329,3 @@ class PtaddrInfos:
             return self.data[language_code]
         else:
             return None
-
-

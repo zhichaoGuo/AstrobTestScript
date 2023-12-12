@@ -24,7 +24,7 @@ def get_pss() -> str:
     pss = ''
     if p:
         try:
-            pss = p.strip().split()[1]  # PSS数值
+            pss = p.strip().split()[2]  # PSS数值
         except Exception as err:
             print('pss format is wrong:%s\r\npss str:%s' % (err, p))
     return pss
@@ -65,17 +65,17 @@ if __name__ == '__main__':
     pss_file_name = os.path.join(os.path.abspath('.'), f'TB9_{time_now}_Pss.log')
     cpu_file_name = os.path.join(os.path.abspath('.'), f'TB9_{time_now}_cpu.log')
     try:
-        t = threading.Thread(target=write_log, args=(pss_file_name, cpu_file_name))
+        t = threading.Thread(target=write_log, args=(pss_file_name, cpu_file_name,1))
         t.setDaemon(True)
         t.start()
         # do something in there
-        time.sleep(60)
+        time.sleep(6000)
     except KeyboardInterrupt:
         print('正在停止！')
     RUNNING = False
     time.sleep(6)
     # draw chart
-    cpu_time, cpu_apk, cpu_core = load_cpu_data(cpu_file_name)
+    cpu_time, cpu_apk, cpu_core = load_cpu_data(cpu_file_name,cpu_number=6)
     mem_time, mem = load_mem_data(pss_file_name)
     draw_chart(mem_time, mem, cpu_time, cpu_apk, cpu_core, f"TB9_{time_now}.png")
 

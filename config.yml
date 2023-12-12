@@ -3,4 +3,4 @@ sqlserver:
   port: 1433
   user: sa
   password: astrob
-  database: HERE_APAC_S231R2
+#  database: HERE_EEU_S231R2

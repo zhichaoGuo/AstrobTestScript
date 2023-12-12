@@ -23,6 +23,433 @@ class QueryResultObj:
             setattr(self, self.arg[i], ele[i])
 
 
+class QueryCountry(QueryObj):
+    class QueryResults(QueryResultObj):
+        arg = ["ISO_COUNTRY_CODE",
+               "COUNTRY_ID",
+               "NAME",
+               "CAPITAL",
+               "TOTAL",
+               "LEVEL",
+               "LANGUAGE_CODE",
+               "DRIVING",
+               "NAME_LANGUAGE"]
+
+    def __init__(self, iso_country_code: list, language_code: list):
+        self.iso_country = ""
+        self.language = ""
+        if iso_country_code:
+            country_str = ""
+            for c in iso_country_code:
+                if country_str is not "":
+                    country_str += f","
+                country_str += f"'{c}'"
+            self.iso_country = f"AND RC.ISO_COUNTRY_CODE IN ({country_str})"
+
+        if language_code:
+            language_str = ""
+            for c in language_code:
+                if language_str is not "":
+                    language_str += f","
+                language_str += f"'{c}'"
+            self.language = f"AND RFN.LANGUAGE_CODE in ({language_str})"
+        else:
+            self.language = "AND RFN.LANGUAGE_CODE = RC.LANGUAGE_CODE"
+
+    def script(self) -> str:
+        script = f'''
+            SELECT DISTINCT
+                LT.ISO_COUNTRY_CODE,
+                LT.COUNTRY_ID,
+                LT.NAME,
+                RT.NAME AS CAPITAL,
+                TOTAL_TABLE.TOTAL,
+                LEVEL_TABLE.LEVEL,
+                LT.LANGUAGE_CODE,
+                LT.DRIVING_SIDE AS DRIVING,
+                LT.NAME_LANGUAGE
+            FROM
+                (SELECT DISTINCT
+                    RAH.ISO_COUNTRY_CODE,
+                    RC.LANGUAGE_CODE,
+                    RAH.COUNTRY_ID,
+                    RFN.NAME,
+                    RFN.NAME_ID,
+                    RFNS.IS_EXONYM,
+                    RFNS.NAME_TYPE,
+                    RFNS.OWNER,
+                    RC.DRIVING_SIDE,
+                    RFN.LANGUAGE_CODE AS NAME_LANGUAGE
+                FROM
+                    RDF_ADMIN_HIERARCHY RAH
+                    LEFT JOIN RDF_FEATURE_NAMES RFNS ON RAH.ADMIN_PLACE_ID = RFNS.FEATURE_ID
+                    LEFT JOIN RDF_FEATURE_NAME RFN ON RFNS.NAME_ID = RFN.NAME_ID
+                    LEFT JOIN RDF_COUNTRY RC ON RAH.ISO_COUNTRY_CODE = RC.ISO_COUNTRY_CODE 
+                WHERE
+                    RAH.ADMIN_ORDER= '0' 
+                    AND RFNS.NAME_TYPE= 'B' 
+                    {self.language}
+                    {self.iso_country}
+                )LT
+                LEFT JOIN 
+                (SELECT
+                    R.POI_ID,
+                    R.COUNTRY_ID,
+                    R.ISO_COUNTRY_CODE,
+                    RFN.NAME,
+                    RFN.LANGUAGE_CODE
+                FROM
+                    (SELECT 
+                        POI_ID,
+                        COUNTRY_ID,
+                        ISO_COUNTRY_CODE,
+                        NAMED_PLACE_ID
+                    FROM 
+                        RDF_CITY_POI
+                    WHERE 
+                        CAPITAL_COUNTRY = 'Y'
+                    ) R
+                    LEFT JOIN 
+                        RDF_FEATURE_NAMES RFNS ON R.NAMED_PLACE_ID = RFNS.FEATURE_ID
+                    LEFT JOIN 
+                        RDF_FEATURE_NAME RFN ON RFNS.NAME_ID = RFN.NAME_ID
+                    LEFT JOIN 
+                        RDF_COUNTRY RC ON RC.ISO_COUNTRY_CODE = R.ISO_COUNTRY_CODE
+                WHERE
+                    NAME_TYPE = 'B'
+                    {self.language}
+                    {self.iso_country}
+                )  RT ON LT.ISO_COUNTRY_CODE=RT.ISO_COUNTRY_CODE
+                LEFT JOIN
+                    (SELECT
+                        ISO_COUNTRY_CODE,
+                        COUNT ( * ) TOTAL
+                    FROM
+                        RDF_ADMIN_HIERARCHY
+                    GROUP BY
+                        ISO_COUNTRY_CODE
+                    ) TOTAL_TABLE on LT.ISO_COUNTRY_CODE=TOTAL_TABLE.ISO_COUNTRY_CODE
+                LEFT JOIN
+                    (SELECT DISTINCT
+                        ISO_COUNTRY_CODE,
+                        COUNTRY_ID,
+                        LEVEL=stuff(
+                            (SELECT
+                                '/'+ CAST(ADMIN_ORDER AS varchar(10))
+                            FROM
+                                (SELECT
+                                    ISO_COUNTRY_CODE,
+                                    COUNTRY_ID,
+                                    ADMIN_ORDER 
+                                FROM
+                                    RDF_ADMIN_HIERARCHY
+                                GROUP BY
+                                    ISO_COUNTRY_CODE,
+                                    COUNTRY_ID,
+                                    ADMIN_ORDER 
+                                ) AS A
+                            WHERE 
+                                ISO_COUNTRY_CODE = B.ISO_COUNTRY_CODE
+                            GROUP BY
+                                ADMIN_ORDER 
+                            FOR XML PATH('') 
+                            ),
+                            1,
+                            1,
+                            '')
+                    FROM
+                        RDF_ADMIN_HIERARCHY B
+                    GROUP BY
+                        ISO_COUNTRY_CODE,
+                        COUNTRY_ID,
+                        ADMIN_ORDER 
+                    ) LEVEL_TABLE ON LT.ISO_COUNTRY_CODE=LEVEL_TABLE.ISO_COUNTRY_CODE
+                WHERE 
+                    (RT.NAME IS NULL)
+                    OR LT.NAME_LANGUAGE=RT.LANGUAGE_CODE
+                ORDER BY
+                    ISO_COUNTRY_CODE,
+                    NAME_LANGUAGE
+'''
+        return script
+
+
+class QueryCity(QueryObj):
+    class QueryResults(QueryResultObj):
+        arg = ['CITY_NAME',
+               'CITY_POI_ID',
+               'NAMED_PLACE_ID',
+               'ORDER1_ID',
+               'ORDER2_ID',
+               'ORDER8_ID',
+               'BUILTUP_ID',
+               'POPULATION',
+               'CAPITAL_COUNTRY',
+               'CAPITAL_ORDER1',
+               'CAPITAL_ORDER8',
+               'NAMED_PLACE_TYPE',
+               'LANGUAGE_CODE',
+               'IS_EXONYM',
+               'NAME_LANGUAGE']
+
+    def __init__(self, iso_country_code: str, language_code: list):
+        self.iso_country_code = iso_country_code
+        self.language = ""
+        for c in language_code:
+            if self.language is not "":
+                self.language += f","
+            self.language += f"'{c}'"
+
+    def script(self) -> str:
+        script = f'''
+            SELECT 
+                RDF_CITY_POI_NAME.NAME AS CITY_NAME,
+                CITY_TABLE.POI_ID AS CITY_POI_ID,
+                CITY_TABLE.NAMED_PLACE_ID,
+                CITY_TABLE.ORDER1_ID,
+                CITY_TABLE.ORDER2_ID,
+                CITY_TABLE.ORDER8_ID,
+                CITY_TABLE.BUILTUP_ID,
+                CITY_TABLE.POPULATION,
+                CITY_TABLE.CAPITAL_COUNTRY,
+                CITY_TABLE.CAPITAL_ORDER1,
+                CITY_TABLE.CAPITAL_ORDER8,
+                CITY_TABLE.NAMED_PLACE_TYPE,
+                CITY_TABLE.LANGUAGE_CODE,
+                RDF_CITY_POI_NAMES.IS_EXONYM,
+                RDF_CITY_POI_NAME.LANGUAGE_CODE AS NAME_LANGUAGE
+            FROM
+                (SELECT TOP 6 * 
+                    FROM
+                        RDF_CITY_POI RCP
+                    WHERE
+                        RCP.POPULATION IS NOT NULL
+                        AND RCP.ISO_COUNTRY_CODE = '{self.iso_country_code}'
+                    ORDER BY
+                        RCP.POPULATION DESC
+                ) AS CITY_TABLE
+                INNER JOIN RDF_CITY_POI_NAMES ON CITY_TABLE.POI_ID = RDF_CITY_POI_NAMES.POI_ID 
+                INNER JOIN RDF_CITY_POI_NAME ON RDF_CITY_POI_NAMES.NAME_ID = RDF_CITY_POI_NAME.NAME_ID 
+            WHERE
+                RDF_CITY_POI_NAMES.NAME_TYPE = 'B'
+                AND RDF_CITY_POI_NAME.LANGUAGE_CODE in ({self.language})
+                AND CITY_TABLE.CAT_ID = 4444
+            ORDER BY  
+                CITY_TABLE.POPULATION DESC,
+                CITY_TABLE.POI_ID,
+                RDF_CITY_POI_NAME.LANGUAGE_CODE
+'''
+        return script
+
+
+class QueryPoi(QueryObj):
+    class QueryResults(QueryResultObj):
+        arg = ['POI_NAME',
+               'POI_ID',
+               'house_number',
+               'street_name',
+               'POI_OWN',
+               'postal_code',
+               'PHONE',
+               'Lon',
+               'Lat',
+               'LINK_ID',
+               'LANGUAGE_POI',
+               'ORDER1_ID',
+               'ORDER2_ID',
+               'ORDER8_ID',
+               'BUILTUP_ID',
+               'CAT_ID',
+               'db_name']
+
+    def __init__(self, iso_country_code: str, order8_id: str, poi_id: list = None, language='ENG'):
+        self.iso_country_code = iso_country_code
+        self.order8_id = order8_id
+        self.language_code = language
+        self.poi_query = ''
+        if poi_id:
+            _poi_id = ""
+            for c in poi_id:
+                if _poi_id is not "":
+                    _poi_id += f","
+                _poi_id += f"'{c}'"
+            self.poi_query = f' AND RP.POI_ID in ({_poi_id})'
+
+    def script(self) -> str:
+        """
+            根据iso_country_code和order8_id，查询城市的poi信息（取随机六个）
+            :return:
+            """
+        script = f'''
+                    SELECT
+                LEFTTABLE.POI_NAME,
+                LEFTTABLE.POI_ID,
+                LEFTTABLE.house_number,
+                LEFTTABLE.street_name,
+                LEFTTABLE.POI_OWN,
+                LEFTTABLE.postal_code,
+                RIGHTTABLE.PHONE,
+                LEFTTABLE.Lon,
+                LEFTTABLE.Lat,
+                LEFTTABLE.LINK_ID,
+                LEFTTABLE.LANGUAGE_POI,
+                LEFTTABLE.ORDER1_ID,
+                LEFTTABLE.ORDER2_ID,
+                LEFTTABLE.ORDER8_ID,
+                LEFTTABLE.BUILTUP_ID,
+                LEFTTABLE.CAT_ID,
+                db_name() 
+            FROM (
+                SELECT TOP 6
+                        RPN.NAME AS POI_NAME,
+                        RP.POI_ID,
+                        RPA.house_number,
+                        RPA.street_name,
+                        RPA.postal_code,
+                        POI_OWN = RFN.NAME,
+                        Lon = RLOC.Lon * 0.00001,
+                        Lat = RLOC.Lat * 0.00001,
+                        RLOC.LINK_ID,
+                        RPN.LANGUAGE_CODE AS LANGUAGE_POI,
+                        RPA.ORDER1_ID,
+                        RPA.ORDER2_ID,
+                        RPA.ORDER8_ID,
+                        RPA.BUILTUP_ID,
+                        RP.CAT_ID,
+                        RPN.LANGUAGE_CODE
+                FROM
+                        RDF_POI RP
+                        INNER JOIN RDF_POI_ADDRESS RPA ON RP.POI_ID = RPA.POI_ID
+                        {self.poi_query}
+                        AND RPA.STREET_NAME IS NOT NULL
+                        AND RPA.ISO_COUNTRY_CODE = '{self.iso_country_code}'
+                        AND RPA.ORDER8_ID = {self.order8_id}
+                        AND RPA.LANGUAGE_CODE = '{self.language_code}'
+                        INNER JOIN RDF_POI_NAMES RPNS ON RP.POI_ID = RPNS.POI_ID
+                        INNER JOIN RDF_POI_NAME RPN ON RPNS.NAME_ID = RPN.NAME_ID 
+                        AND RPN.LANGUAGE_CODE = RPA.LANGUAGE_CODE
+                        INNER JOIN RDF_FEATURE_NAMES RFNS ON RPA.BUILTUP_ID = RFNS.FEATURE_ID
+                        INNER JOIN RDF_FEATURE_NAME RFN ON RFNS.NAME_ID = RFN.NAME_ID
+                        and RFN.LANGUAGE_CODE = RPN.LANGUAGE_CODE
+                        INNER JOIN RDF_LOCATION RLOC ON RPA.LOCATION_ID = RLOC.LOCATION_ID
+                WHERE
+                        RPNS.name_type = 'b'
+                        AND RFNS.name_type = 'b'
+                        AND RFNS.IS_EXONYM = 'n'
+                ORDER BY
+                        NEWID()
+                ) AS LEFTTABLE
+                LEFT JOIN (
+                    SELECT
+                        POI_id,
+                        PHONE = stuff(
+                            (
+                            SELECT
+                                ',' + CONTACT 
+                            FROM (
+                                SELECT
+                                    * 
+                                FROM
+                                    RDF_POI_CONTACT_INFORMATION 
+                                WHERE
+                                    RDF_POI_CONTACT_INFORMATION.contact_type IN ( 1, 2, 5 )
+                                ) AS t 
+                            WHERE
+                                t.POI_id = bb.POI_id FOR xml path ( '' )
+                            ),
+                            1,
+                            1,
+                            '' 
+                        ) 
+                    FROM
+                        DBO.RDF_POI_CONTACT_INFORMATION bb 
+                    GROUP BY
+                        POI_id 
+                ) AS RIGHTTABLE ON LEFTTABLE.POI_ID= RIGHTTABLE.POI_ID
+            ORDER BY 
+                LEFTTABLE.POI_ID,
+                LEFTTABLE.LANGUAGE_POI
+            '''
+        return script
+
+
+class QueryPtaddr(QueryObj):
+    class QueryResults(QueryResultObj):
+        arg = ['ROAD_NAME',
+               'ADDRESS',
+               'SIDE',
+               'ADDRESS_POINT_ID',
+               'ROAD_OWNER',
+               'PD',
+               'LON',
+               'LAT',
+               'EdgeID',
+               'Road_language',
+               'BUILDING_NAME',
+               'admin_place_id',
+               'admin_order',
+               'db_name']
+
+    def __init__(self, iso_code, order_8, language: str, edge_id: list):
+        self.iso_country_code = iso_code
+        self.order8_id = order_8
+        self.language_code = language
+        self.ptaddr_query = ""
+        self.without_ptaddr_query = "INNER JOIN RDF_ROAD_LINK ON RDF_ROAD_LINK.LINK_ID = RDF_LINK.LINK_ID"
+        if edge_id:
+            _edge_id = ""
+            for c in edge_id:
+                if _edge_id is not "":
+                    _edge_id += f","
+                _edge_id += f"'{c}'"
+            self.ptaddr_query = f"""INNER JOIN RDF_ROAD_LINK ON RDF_ROAD_LINK.LINK_ID = RDF_LINK.LINK_ID
+            AND RDF_ROAD_LINK.LINK_ID in ({_edge_id})"""
+            self.without_ptaddr_query = ""
+
+    def script(self) -> str:
+        script = f'''
+        SELECT top 6
+            RDF_ROAD_NAME.STREET_NAME AS ROAD_NAME,
+            RDF_ADDRESS_POINT.ADDRESS,
+            RDF_ADDRESS_POINT.SIDE,
+            RDF_ADDRESS_POINT.ADDRESS_POINT_ID ,
+            RDF_FEATURE_NAME.NAME AS ROAD_OWNER,
+            RDF_POSTAL_AREA.POSTAL_CODE AS PD,
+            RDF_LINK_GEOMETRY.LON* 0.00001 LON,
+            RDF_LINK_GEOMETRY.LAT* 0.00001 LAT,
+            RDF_ROAD_LINK.LINK_ID AS EdgeID,
+            RDF_ROAD_NAME.LANGUAGE_CODE AS Road_language,
+            RDF_ADDRESS_POINT.BUILDING_NAME,
+            RDF_ADMIN_HIERARCHY.admin_place_id,
+            RDF_ADMIN_HIERARCHY.admin_order,
+            db_name()
+        FROM 
+            RDF_LINK
+            {self.ptaddr_query}
+            INNER JOIN RDF_ADMIN_PLACE ON RDF_ADMIN_PLACE.ADMIN_PLACE_ID = RDF_LINK.LEFT_ADMIN_PLACE_ID
+            INNER JOIN RDF_ADMIN_HIERARCHY ON RDF_ADMIN_HIERARCHY.ADMIN_PLACE_ID = RDF_ADMIN_PLACE.ADMIN_PLACE_ID
+                AND RDF_ADMIN_HIERARCHY.ISO_COUNTRY_CODE = '{self.iso_country_code}'
+                AND RDF_ADMIN_HIERARCHY.ORDER8_ID = {self.order8_id}
+            {self.without_ptaddr_query}
+            INNER JOIN RDF_ADDRESS_POINT ON RDF_ADDRESS_POINT.ROAD_LINK_ID = RDF_ROAD_LINK.ROAD_LINK_ID
+                AND RDF_ADDRESS_POINT.LANGUAGE_CODE = '{self.language_code}'
+            INNER JOIN RDF_ROAD_NAME ON RDF_ROAD_NAME.ROAD_NAME_ID = RDF_ROAD_LINK.ROAD_NAME_ID
+                AND RDF_ROAD_NAME.NAME_TYPE='B'
+                AND RDF_ROAD_NAME.IS_EXONYM='N'
+                AND RDF_ROAD_NAME.LANGUAGE_CODE = RDF_ADDRESS_POINT.LANGUAGE_CODE
+            INNER JOIN RDF_FEATURE_NAMES  ON RDF_FEATURE_NAMES.FEATURE_ID = RDF_ADMIN_PLACE.ADMIN_PLACE_ID
+                    AND RDF_FEATURE_NAMES.NAME_TYPE= 'B'
+                    AND RDF_FEATURE_NAMES.IS_EXONYM= 'N' 
+            INNER JOIN RDF_FEATURE_NAME ON RDF_FEATURE_NAME.NAME_ID = RDF_FEATURE_NAMES.NAME_ID
+                    AND RDF_FEATURE_NAME.LANGUAGE_CODE = RDF_ROAD_NAME.LANGUAGE_CODE
+            INNER JOIN RDF_LINK_GEOMETRY ON RDF_LINK_GEOMETRY.LINK_ID = RDF_LINK.LINK_ID
+            LEFT JOIN RDF_POSTAL_AREA ON RDF_LINK.LEFT_POSTAL_AREA_ID = RDF_POSTAL_AREA.POSTAL_AREA_ID 
+        ORDER BY
+            newid()
+        '''
+        return script
+
+
 class QueryAllCountry(QueryObj):
     class QueryResults(QueryResultObj):
         arg = ['ISO_COUNTRY_CODE',
