@@ -1,0 +1,125 @@
+2023-12-22 14:19:59,276 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 14:51:38,475 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 14:58:48,340 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 14:59:03,846 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 14:59:18,796 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:03:18,646 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:03:29,014 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:03:52,302 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:05:18,962 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:05:49,437 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:07:16,053 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:09:39,849 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:10:09,478 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:10:51,631 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:15:45,048 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:15:46,769 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552004 bytes
+2023-12-22 15:15:46,769 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552004 bytes
+2023-12-22 15:15:46,769 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552004 bytes
+2023-12-22 15:15:46,770 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552004 bytes
+2023-12-22 15:15:46,770 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552004 bytes
+2023-12-22 15:15:46,770 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552004 bytes
+2023-12-22 15:15:46,770 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552004 bytes
+2023-12-22 15:15:46,770 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552004 bytes
+2023-12-22 15:15:46,770 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 27780/552004 bytes
+2023-12-22 15:16:16,724 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:16:18,421 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551967 bytes
+2023-12-22 15:16:18,421 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551967 bytes
+2023-12-22 15:16:18,422 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551967 bytes
+2023-12-22 15:16:18,422 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551967 bytes
+2023-12-22 15:16:18,422 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551967 bytes
+2023-12-22 15:16:18,422 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551967 bytes
+2023-12-22 15:16:18,422 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551967 bytes
+2023-12-22 15:16:18,422 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551967 bytes
+2023-12-22 15:16:18,422 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 27743/551967 bytes
+2023-12-22 15:26:34,833 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:34:42,217 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:34:59,308 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:35:00,966 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551990 bytes
+2023-12-22 15:35:00,967 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551990 bytes
+2023-12-22 15:35:00,967 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551990 bytes
+2023-12-22 15:35:00,967 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551990 bytes
+2023-12-22 15:35:00,967 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551990 bytes
+2023-12-22 15:35:00,967 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551990 bytes
+2023-12-22 15:35:00,967 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551990 bytes
+2023-12-22 15:35:00,967 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551990 bytes
+2023-12-22 15:35:00,969 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 27766/551990 bytes
+2023-12-22 15:36:40,405 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:36:56,493 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:36:58,249 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552331 bytes
+2023-12-22 15:36:58,249 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552331 bytes
+2023-12-22 15:36:58,249 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552331 bytes
+2023-12-22 15:36:58,250 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552331 bytes
+2023-12-22 15:36:58,250 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552331 bytes
+2023-12-22 15:36:58,250 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552331 bytes
+2023-12-22 15:36:58,250 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552331 bytes
+2023-12-22 15:36:58,250 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552331 bytes
+2023-12-22 15:36:58,253 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 28107/552331 bytes
+2023-12-22 15:37:26,524 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:37:31,918 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:37:56,535 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:38:23,679 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:41:55,723 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:42:01,103 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:42:02,780 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552248 bytes
+2023-12-22 15:42:02,780 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552248 bytes
+2023-12-22 15:42:02,800 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552248 bytes
+2023-12-22 15:42:02,800 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552248 bytes
+2023-12-22 15:42:02,800 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552248 bytes
+2023-12-22 15:42:02,800 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552248 bytes
+2023-12-22 15:42:02,800 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552248 bytes
+2023-12-22 15:42:02,800 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/552248 bytes
+2023-12-22 15:42:02,801 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 28024/552248 bytes
+2023-12-22 15:45:02,182 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:45:07,828 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:45:18,018 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:45:23,141 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:45:24,872 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551867 bytes
+2023-12-22 15:45:24,872 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551867 bytes
+2023-12-22 15:45:24,872 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551867 bytes
+2023-12-22 15:45:24,872 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551867 bytes
+2023-12-22 15:45:24,872 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551867 bytes
+2023-12-22 15:45:24,873 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551867 bytes
+2023-12-22 15:45:24,873 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551867 bytes
+2023-12-22 15:45:24,873 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 65528/551867 bytes
+2023-12-22 15:45:24,873 - AstrobTestToolLogger - DEBUG - Pulling /data/1.png: 27643/551867 bytes
+2023-12-22 15:51:20,929 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:53:24,663 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:53:34,746 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:54:01,748 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:54:06,539 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:54:12,393 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:54:16,723 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:55:49,546 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:56:03,134 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:56:03,638 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65536/230962 bytes
+2023-12-22 15:56:03,638 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65536/230962 bytes
+2023-12-22 15:56:03,638 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65536/230962 bytes
+2023-12-22 15:56:03,638 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 34354/230962 bytes
+2023-12-22 15:56:42,935 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:56:47,301 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:56:49,135 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65528/551947 bytes
+2023-12-22 15:56:49,135 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65528/551947 bytes
+2023-12-22 15:56:49,135 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65528/551947 bytes
+2023-12-22 15:56:49,135 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65528/551947 bytes
+2023-12-22 15:56:49,136 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65528/551947 bytes
+2023-12-22 15:56:49,136 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65528/551947 bytes
+2023-12-22 15:56:49,136 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65528/551947 bytes
+2023-12-22 15:56:49,136 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65528/551947 bytes
+2023-12-22 15:56:49,137 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 27723/551947 bytes
+2023-12-22 15:57:28,580 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 15:57:30,308 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65528/552003 bytes
+2023-12-22 15:57:30,309 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65528/552003 bytes
+2023-12-22 15:57:30,309 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65528/552003 bytes
+2023-12-22 15:57:30,309 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65528/552003 bytes
+2023-12-22 15:57:30,309 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65528/552003 bytes
+2023-12-22 15:57:30,309 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65528/552003 bytes
+2023-12-22 15:57:30,309 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65528/552003 bytes
+2023-12-22 15:57:30,309 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 65528/552003 bytes
+2023-12-22 15:57:30,309 - AstrobTestToolLogger - DEBUG - Pulling /sdcard/1.png: 27779/552003 bytes
+2023-12-22 17:34:12,701 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 17:35:33,183 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 17:36:52,856 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 17:44:34,818 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 17:44:55,728 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
+2023-12-22 17:46:34,191 - AstrobTestToolLogger - DEBUG - Read config:{'logcat': {'save_path': ['/sdcard', '/sdcard/astrob', '/sdcard/astrob/TurboDog']}, 'screencap': {'save_path': ['/sdcard', '/sdcard/astrob', '/data']}}
