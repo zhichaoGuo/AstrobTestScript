@@ -1,5 +1,8 @@
 import os.path
+import time
 
+import usb1
+from PySide2.QtCore import QThread, Signal
 from adb_shell.adb_device import AdbDevice, AdbDeviceUsb
 from adb_shell.auth.sign_pythonrsa import PythonRSASigner
 
@@ -21,8 +24,11 @@ class DevicesManager:
                 device_serial = device.getSerialNumber()
                 if device_serial:
                     devices_list.append(device_serial)
-            except Exception as err:
+            except usb1.USBErrorNotSupported as err:
                 LogManager.debug('get_devices error:%s' % err)
+            except usb1.USBErrorAccess as err:
+                LogManager.debug('get_devices error:%s' % err)
+                LogManager.warning('请检查是否存在命令窗口已运行adb，请在命令窗口执行adb kill-server')
         return devices_list
 
     @staticmethod
@@ -47,6 +53,9 @@ class DevicesManager:
         from adb_shell.auth.keygen import keygen
         keygen(DevicesManager.adb_key_save_path)
 
+    def check_device_alive(self, uuid: str):
+        return uuid in self.devices_list
+
 
 class Device(AdbDeviceUsb):
     def __init__(self, serial):
@@ -57,3 +66,25 @@ class Device(AdbDeviceUsb):
 
     def pull_screen_cap(self, tmp_dir: str, tmp_name: str, local_dir: str, local_name: str):
         self.pull(f'{tmp_dir}/{tmp_name}', f'{local_dir}/{local_name}', LogManager.pull_log)
+
+
+class DeviceThread(QThread):
+    # 声明一个自定义信号
+    # 信号是一个int变量
+    signal = Signal(bool)
+
+    def __init__(self, manager: DevicesManager,device_uuid:str):
+        super().__init__()
+        self.running_status = True
+        self.manager = manager
+        self.device_uuid = device_uuid
+
+    def run(self):
+        LogManager.info('Device Thread is running!')
+        while self.running_status:
+            if self.manager.check_device_alive(self.device_uuid):
+                time.sleep(1)
+            else:
+                self.signal.emit(False)
+                self.running_status = False
+        LogManager.info('Device Thread is over!')
