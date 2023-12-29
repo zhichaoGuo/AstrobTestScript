@@ -3,7 +3,7 @@ logcat:
     - /sdcard
     - /sdcard/astrob
     - /sdcard/astrob/TurboDog
-screencap:
+screen_cap:
   save_path:
     - /sdcard
     - /sdcard/astrob

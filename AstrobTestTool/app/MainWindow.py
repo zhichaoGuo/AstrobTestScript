@@ -22,10 +22,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # 根据配置文件配置box
         self.devices_manager = DevicesManager()
         # 获取devices列表，并配置box
+        self.box_screencap_save_path.addItems(self.config_manager.config['screen_cap']['save_path'])
+        self.box_log_save_path.addItems(self.config_manager.config['logcat']['save_path'])
         self.f_btn_refresh_devices()
+        self.all_button_status(False)
         #
         self.device_thread = None
         # 绑定按键回调
+        self.btn_connect_device_status = True  # 设备未连接时Ture，设备链接时为False
         self.btn_refresh.clicked.connect(lambda: self.f_btn_refresh_devices())
         self.btn_connect_device.clicked.connect(lambda: self.f_btn_connect_devices())
         # 设置信号槽，锁按键，写信息，写log
@@ -48,21 +52,47 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         设备在线状态的槽函数负责再设备离线时控制界面状态
         """
-        # todo
-        self.lock_device_button(status)
+        self.all_button_status(status)
+        self.btn_connect_device_status = not status
+        if self.btn_connect_device_status:
+            btn_text = '连接设备'
+        else:
+            btn_text = '断开设备'
+        self.btn_refresh.setEnabled(self.btn_connect_device_status)
+        self.box_devices.setEnabled(self.btn_connect_device_status)
+        self.btn_connect_device.setText(btn_text)
 
-    def lock_device_button(self, lock_status: bool):
-        self.box_display_id.setEditable(lock_status)
-        self.box_screencap_save_path.setEditable(lock_status)
-        self.box_log_level.setEditable(lock_status)
-        self.btn_screencap.setEnabled(lock_status)
-        self.btn_screencap_clear_file.setEnabled(lock_status)
-        self.btn_record_start.setEnabled(lock_status)
-        self.btn_record_output.setEnabled(lock_status)
+    @Slot(list)
+    def update_devices_display_id(self, display_id_list: list):
+        self.box_display_id.addItems(display_id_list)
+
+    def all_button_status(self, status: bool):
+        self.box_display_id.setEnabled(status)
+        self.box_screencap_save_path.setEnabled(status)
+        self.box_log_level.setEnabled(status)
+        self.box_log_save_path.setEnabled(status)
+        self.btn_screencap.setEnabled(status)
+        self.btn_screencap_clear_file.setEnabled(status)
+        self.btn_record_start.setEnabled(status)
+        self.btn_record_output.setEnabled(status)
+        self.btn_log_clear.setEnabled(status)
+        self.btn_log_start.setEnabled(status)
+        self.btn_log_output.setEnabled(status)
+        self.btn_log_clear_file.setEnabled(status)
 
     def f_btn_refresh_devices(self):
         self.box_devices.addItems(self.devices_manager.devices_list)
 
     def f_btn_connect_devices(self):
-        self.device_thread = DeviceThread(self.devices_manager, self.box_devices.currentText())
-        self.device_thread.start()
+        if self.btn_connect_device_status:
+            if self.box_devices.currentText():
+                self.device_thread = DeviceThread(self.devices_manager, self.box_devices.currentText())
+                self.device_thread.signal_alive.connect(self.device_online_status)
+                self.device_thread.signal_display_id.connect(self.update_devices_display_id)
+                self.device_thread.start()
+        else:
+            self.device_thread.running_status = False
+
+    def f_btn_screen_cap(self):
+        pass
+

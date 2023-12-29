@@ -8,13 +8,14 @@ from adb_shell.auth.sign_pythonrsa import PythonRSASigner
 
 from AstrobTestTool.app.Utils import LogManager
 
+from adb_shell.adb_device import UsbTransport
+
 
 class DevicesManager:
     adb_key_save_path = os.path.join(os.path.dirname(__file__), 'config', 'adbKey')
 
     @property
     def devices_list(self):
-        from adb_shell.adb_device import UsbTransport
 
         devices = UsbTransport.USB1_CTX.getDeviceIterator(skip_on_error=True)
         # 遍历列表，调用每个AdbDevice对象的get_serial方法，返回设备的serial
@@ -31,9 +32,9 @@ class DevicesManager:
                 LogManager.warning('请检查是否存在命令窗口已运行adb，请在命令窗口执行adb kill-server')
         return devices_list
 
-    @staticmethod
-    def get_device(uuid: str):
-        if uuid in DevicesManager.devices_list:
+    def get_device(self, uuid: str):
+        dev_list = self.devices_list
+        if uuid in dev_list:
             with open(DevicesManager.adb_key_save_path) as f:
                 priv = f.read()
             with open(DevicesManager.adb_key_save_path + '.pub') as f:
@@ -61,6 +62,14 @@ class Device(AdbDeviceUsb):
     def __init__(self, serial):
         super().__init__(serial)
 
+    @property
+    def display_id(self):
+        res = self.shell(f'dumpsys window displays | grep "Display: mDisplayId="')
+        id_list = []
+        for i in res.strip().split('\n'):
+            id_list.append(i.strip().split('=')[1])
+        return id_list
+
     def screen_cap(self, tmp_dir: str, tmp_name: str):
         self.shell(f'screencap {tmp_dir}/{tmp_name}')
 
@@ -71,20 +80,27 @@ class Device(AdbDeviceUsb):
 class DeviceThread(QThread):
     # 声明一个自定义信号
     # 信号是一个int变量
-    signal = Signal(bool)
+    signal_alive = Signal(bool)
+    signal_display_id = Signal(list)
 
-    def __init__(self, manager: DevicesManager,device_uuid:str):
+    def __init__(self, manager: DevicesManager, device_uuid: str):
         super().__init__()
         self.running_status = True
+        self.signal_alive_send_flag = False
         self.manager = manager
         self.device_uuid = device_uuid
+        self.devices_list = []
 
     def run(self):
+        self.signal_display_id.emit(self.manager.get_device(self.device_uuid).display_id)
         LogManager.info('Device Thread is running!')
         while self.running_status:
             if self.manager.check_device_alive(self.device_uuid):
+                if not self.signal_alive_send_flag:
+                    self.signal_alive.emit(True)
+                    self.signal_alive_send_flag = True
                 time.sleep(1)
             else:
-                self.signal.emit(False)
                 self.running_status = False
+        self.signal_alive.emit(False)
         LogManager.info('Device Thread is over!')
