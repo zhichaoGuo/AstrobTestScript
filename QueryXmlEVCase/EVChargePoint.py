@@ -5,6 +5,7 @@ class EVChargePoint:
     AllAttr = [
         'CountryCode',
         'POI_Name',
+        'index',
         'Contact',  # 组合
         'TotalNumberOfConnectors',
         'ConnectorTypeName',  # 组合
@@ -22,15 +23,15 @@ class EVChargePoint:
         'Entry_Point_Lat',
         'Entry_Point_Lon',
         'Display_Point_Lat',
-        'Display_Point_Lat',
+        'Display_Point_Lon',
         'Open_24_Hours',
         'Private_Access',
         'HoursOfOperation',  # 组合
         'POI_Entity_ID'
     ]
 
-
     def __init__(self, ele: Element):
+        self.index = None
         for attr in self.AllAttr:
             setattr(self, attr, '')
         node_identity = ele.find('Identity')
@@ -76,6 +77,8 @@ class EVChargePoint:
             node_hours_of_operation = ele.find('Details').find('HoursOfOperation')
             if node_hours_of_operation:
                 self.HoursOfOperation = get_hours_of_operation(node_hours_of_operation)
+    def add_index(self,index:int):
+        self.index = index
 
 
 def get_name(ele: Element):
@@ -168,7 +171,19 @@ def parse_electric(ele: Element):
         Voltage += f'{node_voltage.find("Min").text}-{node_voltage.find("Max").text}\r\n'
         NumberOfPhases += f'{node.find("NumberOfPhases").text}\r\n'
         Flow += f'{node.find("Flow").text}\r\n'
-    return ConnectorTypeName, CustomerConnectorName, NumberOfConnectors, MaxPowerLevel, Voltage, NumberOfPhases, Flow
+    return (remove_rn(ConnectorTypeName),
+            remove_rn(CustomerConnectorName),
+            remove_rn(NumberOfConnectors),
+            remove_rn(MaxPowerLevel),
+            remove_rn(Voltage),
+            remove_rn(NumberOfPhases), remove_rn(Flow))
+
+
+def remove_rn(input_str: str):
+    if input_str.endswith('\r\n'):
+        return input_str[:-2]
+    else:
+        return input_str
 
 
 def get_hours_of_operation(ele: Element):

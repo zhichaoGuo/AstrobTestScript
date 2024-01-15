@@ -46,7 +46,7 @@ def return_all_node_in_xml(x_path: str):
     return root.findall(f'POI')
 
 
-def write_excel(count_data: dict, write_data: dict, save_name:str):
+def write_excel(count_data: dict, write_data: dict, save_name: str):
     wb = openpyxl.Workbook()
     # 创建总览
     sheet_index = 0
@@ -58,24 +58,43 @@ def write_excel(count_data: dict, write_data: dict, save_name:str):
         work_sheet.cell(cur_row_index, cur_col_index, key)
         work_sheet.cell(cur_row_index, cur_col_index + 1, count_data[key])
         cur_row_index += 1
-    for pro_iso_code, pro_data in write_data.items():
-        sheet_index += 1
-        # 创建用例页面
-        wb.create_sheet(index=sheet_index, title=pro_iso_code)
-        work_sheet = wb.worksheets[sheet_index]
-        cur_row_index = 1
-        cur_col_index = 1
-        # 设置第一行标题
-        for attr in EVChargePoint.AllAttr:
-            work_sheet.cell(cur_row_index, cur_col_index, attr)
-            cur_col_index += 1
-        cur_row_index += 1
+    # 创建用例页面
+    sheet_index += 1
+    wb.create_sheet(index=sheet_index, title='data case')
+    work_sheet = wb.worksheets[sheet_index]
+    cur_row_index = 1
+    cur_col_index = 1
+    # 设置第一行标题
+    for attr in EVChargePoint.AllAttr:
+        work_sheet.cell(cur_row_index, cur_col_index, attr)
+        cur_col_index += 1
+    cur_row_index += 1
+
+    for _, pro_data in write_data.items():
         for _data in pro_data:
             cur_col_index = 1
             for attr in EVChargePoint.AllAttr:
                 work_sheet.cell(cur_row_index, cur_col_index, getattr(_data, attr))
                 cur_col_index += 1
             cur_row_index += 1
+    # for pro_iso_code, pro_data in write_data.items():
+    #     sheet_index += 1
+    #     # 创建用例页面
+    #     wb.create_sheet(index=sheet_index, title=pro_iso_code)
+    #     work_sheet = wb.worksheets[sheet_index]
+    #     cur_row_index = 1
+    #     cur_col_index = 1
+    #     # 设置第一行标题
+    #     for attr in EVChargePoint.AllAttr:
+    #         work_sheet.cell(cur_row_index, cur_col_index, attr)
+    #         cur_col_index += 1
+    #     cur_row_index += 1
+    #     for _data in pro_data:
+    #         cur_col_index = 1
+    #         for attr in EVChargePoint.AllAttr:
+    #             work_sheet.cell(cur_row_index, cur_col_index, getattr(_data, attr))
+    #             cur_col_index += 1
+    #         cur_row_index += 1
     # 保存工作表
     # version_name = os.path.basename(save_path)
     excel_name = save_name
@@ -83,8 +102,8 @@ def write_excel(count_data: dict, write_data: dict, save_name:str):
 
 
 if __name__ == '__main__':
-    ev_data_path = 'E:\HERE EV Charge Points Static Europe Release 1 S231_G3'
-    excel_file_name = 'EU_231G3_20231117.xlsx'
+    ev_data_path = 'E:\EVdata\HERE EV Charge Points Static Europe S231_H0'
+    excel_file_name = 'EU_231H0_20240113.xlsx'
     all_country_folder = return_all_folder_without_tag(aim_path=ev_data_path, without_tag=['Reference'])
     count = {}
     data = {}
@@ -101,6 +120,9 @@ if __name__ == '__main__':
         else:
             pool = folder_node
         for node in pool:
-            folder_obj.append(EVChargePoint(node))
+            ev_obj = EVChargePoint(node)
+            ev_obj.add_index(folder_node.index(node)+1)
+            folder_obj.append(ev_obj)
         data[os.path.basename(folder)] = folder_obj
     write_excel(count, data, excel_file_name)
+
