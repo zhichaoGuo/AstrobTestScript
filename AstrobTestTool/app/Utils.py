@@ -1,7 +1,11 @@
 import logging
 import os.path
+from datetime import datetime
+from os.path import abspath
+from threading import Thread
 
 import yaml
+from PySide2.QtWidgets import QFileDialog
 
 
 class ConfigManager:
@@ -26,6 +30,29 @@ class ConfigManager:
             raise AttributeError('config not set')
         with open(self.config_path, 'w') as configfile:
             yaml.dump(config_obj, configfile)
+
+
+def get_save_path(window, file_buf, file_methd):
+    try:
+        file_name = '[' + str(datetime.now())[5:].replace(":", "·").replace("-", "").split(".")[0].replace(" ", "]")
+        file_name = file_name.split(']')[0] + f']' + file_name.split(']')[1]
+        filePath = QFileDialog.getSaveFileName(window, '保存路径', f'{abspath(".")}\\screen\\{file_name}.{file_methd}',
+                                               f'.{file_methd}(*.{file_methd})')
+        try:
+            # with open(filePath[0], "wb") as f:
+            #     f.write(file_buf)
+            # f.close()
+            window.show_message('保存%s文件成功' % file_methd)
+            from os import system
+            thread = Thread(target=system, args=[f"{filePath[0]}", ])
+            thread.setDaemon(True)
+            thread.start()
+            return filePath[0]
+        except FileNotFoundError:
+            window.show_message('取消保存%s文件' % file_methd)
+    except TypeError:
+        window.show_message('save_file:TypeError', 1)
+        return False
 
 
 class LogManager:

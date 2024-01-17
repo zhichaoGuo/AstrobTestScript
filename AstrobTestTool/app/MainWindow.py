@@ -1,4 +1,6 @@
 import os.path
+import time
+from threading import Thread
 
 from PySide2.QtCore import Qt, Slot
 from PySide2.QtWidgets import QMainWindow
@@ -26,15 +28,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.box_log_save_path.addItems(self.config_manager.config['logcat']['save_path'])
         self.f_btn_refresh_devices()
         self.all_button_status(False)
-        #
+        # 设备心跳线程，在连接设备后创建线程
         self.device_thread = None
+        self.device = None
         # 绑定按键回调
         self.btn_connect_device_status = True  # 设备未连接时Ture，设备链接时为False
         self.btn_refresh.clicked.connect(lambda: self.f_btn_refresh_devices())
         self.btn_connect_device.clicked.connect(lambda: self.f_btn_connect_devices())
+        self.btn_screencap.clicked.connect(lambda: self.f_btn_screen_cap())
         # 设置信号槽，锁按键，写信息，写log
 
     def closeEvent(self, event) -> None:
+        if self.device_thread:
+            self.device_thread.running_status = False
+            self.device_thread.wait()  # 防止线程异常退出
         from sys import exit
         exit(0)
 
@@ -45,6 +52,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @Slot(list)
     def update_devices_list(self, devices_list: list):
+        self.box_devices.clear()
         self.box_devices.addItems(devices_list)
 
     @Slot(bool)
@@ -54,17 +62,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         self.all_button_status(status)
         self.btn_connect_device_status = not status
-        if self.btn_connect_device_status:
-            btn_text = '连接设备'
-        else:
-            btn_text = '断开设备'
         self.btn_refresh.setEnabled(self.btn_connect_device_status)
         self.box_devices.setEnabled(self.btn_connect_device_status)
+        if self.btn_connect_device_status:
+            # 此时为断开连接，需要等待心跳线程退出
+            btn_text = '连接设备'
+            self.device_thread.wait()  # 防止线程异常退出
+            self.device_thread = None
+            self.devices_manager.close_device()
+            self.device = None
+        else:
+            btn_text = '断开设备'
+            self.device = self.devices_manager.get_device(self.device_thread.device_uuid)
         self.btn_connect_device.setText(btn_text)
 
     @Slot(list)
     def update_devices_display_id(self, display_id_list: list):
+        self.box_display_id.clear()
         self.box_display_id.addItems(display_id_list)
+
+    @Slot(object)
+    def set_device(self,device):
+        self.device = device
 
     def all_button_status(self, status: bool):
         self.box_display_id.setEnabled(status)
@@ -81,18 +100,34 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.btn_log_clear_file.setEnabled(status)
 
     def f_btn_refresh_devices(self):
-        self.box_devices.addItems(self.devices_manager.devices_list)
+        self.update_devices_list(self.devices_manager.devices_serial_list)
 
     def f_btn_connect_devices(self):
+        """
+        点击连接设备按钮，通过self.btn_connect_device_status判断此时是连接还是断开
+        在ui线程不执行逻辑，在设备心跳线程中根据实际状况通过信号改变ui线程的状态
+        """
         if self.btn_connect_device_status:
             if self.box_devices.currentText():
+                self.device = self.devices_manager.get_device(self.box_devices.currentText())
                 self.device_thread = DeviceThread(self.devices_manager, self.box_devices.currentText())
                 self.device_thread.signal_alive.connect(self.device_online_status)
                 self.device_thread.signal_display_id.connect(self.update_devices_display_id)
+                self.device_thread.signal_device_info.connect(self.update_device_info)
                 self.device_thread.start()
+            else:
+                self.update_device_info('当前未选择设备')
         else:
+            # 此时也不改变状态，而是通过心跳线程的信号来改变ui线程的状态
             self.device_thread.running_status = False
 
     def f_btn_screen_cap(self):
-        pass
+        # 起新线程下载syslog
+        thread = Thread(target=self.device.screen_cap, args=[self.box_screencap_save_path.currentText(), 'testtool.png', '0', ])
+        # 设置成守护线程
+        thread.setDaemon(True)
+        # 启动线程
+        thread.start()
+        self.update_device_info('正在保存截图')
 
+        print('pika')
