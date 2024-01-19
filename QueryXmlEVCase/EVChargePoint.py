@@ -82,13 +82,16 @@ class EVChargePoint:
 
 
 def get_name(ele: Element):
+    _name = ''
     if ele:
         for node in ele.findall('POI_Name'):
             if node.get('Type') == 'Official':
                 for node_text in node.findall('Text'):
                     if not node_text.get('Trans_Type'):
-                        return node_text.text
-    return ''
+                        _name += f'{node_text.text}\r\n'
+    if _name.endswith('\r\n'):
+        _name = _name[:-2]
+    return _name
 
 
 def parse_entry_point(ele: Element):
@@ -106,25 +109,33 @@ def parse_entry_point(ele: Element):
         node_address_number = node_parsed_street_address.find('Address_Number')
         if node_address_number:
             House_Number = node_address_number.find('House_Number').text
-        node_parsed_street_name = node_parsed_street_address.find('ParsedStreetName')
-        if node_parsed_street_name:
-            StreetName = node_parsed_street_name.find('StreetName').text
+        nodes_parsed_street_name = node_parsed_street_address.findall('ParsedStreetName')
+        for node_parsed_street_name in nodes_parsed_street_name:
+            StreetName += f"{node_parsed_street_name.find('StreetName').text}\r\n"
+        if StreetName.endswith('\r\n'):
+            StreetName = StreetName[:-2]
     node_parsed_place = node_parsed_address.find('ParsedPlace')
     for node in node_parsed_place.findall('PlaceLevel2'):
         if node.get('Language_Code'):
-            PlaceLevel2 = node.text
+            PlaceLevel2 += f"{node.text}\r\n"
         else:
             print('PlaceLevel2拥有翻译语言：%s' % node.get('Trans_Type'))
+    if PlaceLevel2.endswith("\r\n"):
+        PlaceLevel2 = PlaceLevel2[:-2]
     for node in node_parsed_place.findall('PlaceLevel3'):
         if node.get('Language_Code'):
-            PlaceLevel3 = node.text
+            PlaceLevel3 += f"{node.text}\r\n"
         else:
             print('PlaceLevel3拥有翻译语言：%s' % node.get('Trans_Type'))
+    if PlaceLevel3.endswith("\r\n"):
+        PlaceLevel3 = PlaceLevel3[:-2]
     for node in node_parsed_place.findall('PlaceLevel4'):
         if node.get('Language_Code'):
-            PlaceLevel4 = node.text
+            PlaceLevel4 += f"{node.text}\r\n"
         else:
             print('PlaceLevel4拥有翻译语言：%s' % node.get('Trans_Type'))
+    if PlaceLevel4.endswith("\r\n"):
+        PlaceLevel4 = PlaceLevel4[:-2]
     CountryCode = node_parsed_address.find('CountryCode').text
     node_GeoPosition = ele.find('GeoPosition')
     Entry_Point_Lat = node_GeoPosition.find('Latitude').text
