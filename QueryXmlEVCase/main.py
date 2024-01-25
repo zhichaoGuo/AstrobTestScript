@@ -97,13 +97,14 @@ def write_excel(count_data: dict, write_data: dict, save_name: str):
     #         cur_row_index += 1
     # 保存工作表
     # version_name = os.path.basename(save_path)
-    excel_name = save_name
+    # excel_name = save_name
+    excel_name = os.path.join(os.path.dirname(__file__),'case',save_name)
     wb.save(excel_name)
 
 
 if __name__ == '__main__':
     ev_data_path = 'E:\EVdata\HERE EV Charge Points Static Europe S231_H0'
-    excel_file_name = 'EU_231H0_20240113.xlsx'
+    excel_file_name = 'HERE_EU_231H0_20240124_multi.xlsx'
     all_country_folder = return_all_folder_without_tag(aim_path=ev_data_path, without_tag=['Reference'])
     count = {}
     data = {}

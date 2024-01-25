@@ -1,10 +1,13 @@
 from xml.etree.ElementTree import Element
 
+from AstrobTestTool.app.Utils import LogManager
+
 
 class EVChargePoint:
     AllAttr = [
         'CountryCode',
-        'POI_Name',
+        'Official_Name',
+        'Synonym_Name',
         'index',
         'Contact',  # 组合
         'TotalNumberOfConnectors',
@@ -36,9 +39,8 @@ class EVChargePoint:
             setattr(self, attr, '')
         node_identity = ele.find('Identity')
         self.POI_Entity_ID = node_identity.find('POI_Entity_ID').text
-        self.POI_Name = get_name(node_identity.find('Names'))
+        self.Official_Name, self.Synonym_Name = get_name(node_identity.find('Names'))
         node_locations = ele.find('Locations')
-
         nodes_location = node_locations.findall('Location')
         for node_location in nodes_location:
             node_type = node_location.get('Type')
@@ -54,10 +56,9 @@ class EVChargePoint:
             elif node_type == 'Display Location':
                 self.Display_Point_Lat, self.Display_Point_Lon = parse_display_point(node_location)
             else:
-                print('解析Location节点失败，存在未知类型：%s' % node_type)
+                LogManager.error('解析Location节点失败，存在未知类型：%s' % node_type)
         node_contacts = ele.find('Contacts')
-        if node_contacts:
-            self.Contact = get_contact(node_contacts)
+        self.Contact = get_contact(node_contacts)
         node_fuels = ele.find('Products_Services').find('Fuels')
         if len(node_fuels.findall('Electric')) > 1:
             raise AttributeError('[%s]Fuels节点具有不止一个Electric子节点！' % self.POI_Entity_ID)
@@ -75,23 +76,36 @@ class EVChargePoint:
         self.HoursOfOperation = ''
         if self.Open_24_Hours != 'true':
             node_hours_of_operation = ele.find('Details').find('HoursOfOperation')
-            if node_hours_of_operation:
-                self.HoursOfOperation = get_hours_of_operation(node_hours_of_operation)
-    def add_index(self,index:int):
+            self.HoursOfOperation = get_hours_of_operation(node_hours_of_operation)
+
+    def add_index(self, index: int):
         self.index = index
 
 
 def get_name(ele: Element):
+    """
+    对MEA SAU存在英语和阿语 官方名称和同义词 一共四种 分别放在<POI_Name>中以Language_Code 和 Type 进行区分
+    对MEA ISR存在希伯来语和音译语言 一共两种 放在<POI_Name>中不同的<Text>中以Trans_Type进行区分
+    对EU ESP 存在官方名称和同义词 一共两种 分别放在<POI_Name>中以Type进行区分
+    """
     _name = ''
+    _name1 = ''
     if ele:
         for node in ele.findall('POI_Name'):
             if node.get('Type') == 'Official':
                 for node_text in node.findall('Text'):
-                    if not node_text.get('Trans_Type'):
+                    # Trans_Type 拼在后面，正常语言拼在前面
+                    if node_text.get('Trans_Type'):
                         _name += f'{node_text.text}\r\n'
-    if _name.endswith('\r\n'):
-        _name = _name[:-2]
-    return _name
+                    else:
+                        _name = f'{node_text.text}\r\n{_name}'
+            if node.get('Type') == 'Synonym':
+                for node_text in node.findall('Text'):
+                    if node_text.get('Trans_Type'):
+                        _name1 += f'{node_text.text}\r\n'
+                    else:
+                        _name1 = f'{node_text.text}\r\n{_name1}'
+    return remove_rn(_name), remove_rn(_name1)
 
 
 def parse_entry_point(ele: Element):
@@ -103,6 +117,14 @@ def parse_entry_point(ele: Element):
     CountryCode = ''
     Entry_Point_Lat = ''
     Entry_Point_Lon = ''
+    """
+    对于MEA SAU street name存在英语和阿语两种 
+        存在<Address><ParsedAddress><ParsedStreetAddress><ParsedStreetName><StreetName>下以Language_Code属性区分
+    对于MEA ISR street name存在希伯来语和音译语言 
+        存在<Address><ParsedAddress><ParsedStreetAddress><ParsedStreetName>下以<StreetName>和<Trans_ParsedStreetName><StreetName>
+    对于EU ESP street name 
+        存在<Actual_Address_Components><Actual_Street_Name><Actual_Street_Name_Base>中
+    """
     node_parsed_address = ele.find('Address').find('ParsedAddress')
     node_parsed_street_address = node_parsed_address.find('ParsedStreetAddress')
     if node_parsed_street_address:
@@ -112,30 +134,44 @@ def parse_entry_point(ele: Element):
         nodes_parsed_street_name = node_parsed_street_address.findall('ParsedStreetName')
         for node_parsed_street_name in nodes_parsed_street_name:
             StreetName += f"{node_parsed_street_name.find('StreetName').text}\r\n"
-        if StreetName.endswith('\r\n'):
-            StreetName = StreetName[:-2]
+            node_trans_parsed_street_name = node_parsed_street_name.find('Trans_ParsedStreetName')
+            if node_trans_parsed_street_name:
+                StreetName += f"{node_trans_parsed_street_name.find('StreetName').text}\r\n"
+    node_actual_address_components = ele.find('Actual_Address_Components')
+    if node_actual_address_components:
+        if len(node_actual_address_components.find('Actual_Street_Name').findall('Actual_Street_Name_Base'))>1:
+            LogManager.error('Actual_Street_Name_Base 数量大于1，需要重构此处解析！')
+        StreetName += f"{node_actual_address_components.find('Actual_Street_Name').find('Actual_Street_Name_Base').text}\r\n"
+    StreetName = remove_rn(StreetName)
+    """
+    对MEA SAU place level 有阿语和英语两种 存在Language_Code区别
+    对MEA ISR place level 有希伯来语和音译语言两种 存在Language_Code和Trans_Type区别
+    """
     node_parsed_place = node_parsed_address.find('ParsedPlace')
     for node in node_parsed_place.findall('PlaceLevel2'):
         if node.get('Language_Code'):
-            PlaceLevel2 += f"{node.text}\r\n"
+            PlaceLevel2 += f"{node.get('Language_Code')}:{node.text}\r\n"
+        elif node.get('Trans_Type'):
+            PlaceLevel2 += f"{node.get('Trans_Type')}:{node.text}\r\n"
         else:
-            print('PlaceLevel2拥有翻译语言：%s' % node.get('Trans_Type'))
-    if PlaceLevel2.endswith("\r\n"):
-        PlaceLevel2 = PlaceLevel2[:-2]
+            LogManager.warning('未登记PlaceLevel2：%s' % node.text)
+    PlaceLevel2 = remove_rn(PlaceLevel2)
     for node in node_parsed_place.findall('PlaceLevel3'):
         if node.get('Language_Code'):
-            PlaceLevel3 += f"{node.text}\r\n"
+            PlaceLevel3 += f"{node.get('Language_Code')}:{node.text}\r\n"
+        elif node.get('Trans_Type'):
+            PlaceLevel3 += f"{node.get('Trans_Type')}:{node.text}\r\n"
         else:
-            print('PlaceLevel3拥有翻译语言：%s' % node.get('Trans_Type'))
-    if PlaceLevel3.endswith("\r\n"):
-        PlaceLevel3 = PlaceLevel3[:-2]
+            LogManager.warning('未登记PlaceLevel3：%s' % node.text)
+    PlaceLevel3 = remove_rn(PlaceLevel3)
     for node in node_parsed_place.findall('PlaceLevel4'):
         if node.get('Language_Code'):
-            PlaceLevel4 += f"{node.text}\r\n"
+            PlaceLevel4 += f"{node.get('Language_Code')}:{node.text}\r\n"
+        elif node.get('Trans_Type'):
+            PlaceLevel4 += f"{node.get('Trans_Type')}:{node.text}\r\n"
         else:
-            print('PlaceLevel4拥有翻译语言：%s' % node.get('Trans_Type'))
-    if PlaceLevel4.endswith("\r\n"):
-        PlaceLevel4 = PlaceLevel4[:-2]
+            LogManager.warning('未登记PlaceLevel4：%s' % node.text)
+    PlaceLevel4 = remove_rn(PlaceLevel4)
     CountryCode = node_parsed_address.find('CountryCode').text
     node_GeoPosition = ele.find('GeoPosition')
     Entry_Point_Lat = node_GeoPosition.find('Latitude').text
@@ -148,21 +184,20 @@ def parse_display_point(ele: Element):
     node_GeoPosition = ele.find('GeoPosition')
     Point_Lat = node_GeoPosition.find('Latitude').text
     Point_Lon = node_GeoPosition.find('Longitude').text
-
     return Point_Lat, Point_Lon
 
 
 def get_contact(ele: Element):
     phone = ''
-    nodes_contact = ele.findall('Contact')
-    for node in nodes_contact:
-        node_number = node.find('Number')
-        if node_number.get('Type') == 'Phone Number':
-            phone += f'{node_number.text}\r\n'
-        else:
-            print('还有其他类型的联系方式：%s' % node_number.get('Type'))
-
-    return phone
+    if ele:
+        nodes_contact = ele.findall('Contact')
+        for node in nodes_contact:
+            node_number = node.find('Number')
+            if node_number.get('Type') == 'Phone Number':
+                phone += f'{node_number.text}\r\n'
+            else:
+                LogManager.warning('还有其他类型的联系方式：%s' % node_number.get('Type'))
+    return remove_rn(phone)
 
 
 def parse_electric(ele: Element):
@@ -199,6 +234,7 @@ def remove_rn(input_str: str):
 
 def get_hours_of_operation(ele: Element):
     operation = ''
-    for node in ele.findall('DayOfWeek'):
-        operation += f'{node.get("DayType")}:{node.find("OpeningHours").text}-{node.find("ClosingHours").text}\r\n'
-    return operation
+    if ele:
+        for node in ele.findall('DayOfWeek'):
+            operation += f'{node.get("DayType")}:{node.find("OpeningHours").text}-{node.find("ClosingHours").text}\r\n'
+    return remove_rn(operation)
