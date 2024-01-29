@@ -149,6 +149,7 @@ class SqlServer:
         :param script_obj:
         :return:
         """
+        LogUtils.info(script_obj.script())
         self.cursor.execute(script_obj.script())
         res = []
         for r in self.cursor.fetchall():

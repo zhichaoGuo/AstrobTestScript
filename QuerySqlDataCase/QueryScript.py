@@ -390,20 +390,21 @@ class QueryPtaddr(QueryObj):
                'admin_order',
                'db_name']
 
-    def __init__(self, iso_code, order_8, language: str, edge_id: list):
+    def __init__(self, iso_code, order_8, language: str, point_id: list):
         self.iso_country_code = iso_code
         self.order8_id = order_8
         self.language_code = language
-        self.ptaddr_query = ""
+        self.ptaddr_query_link_id = ""
+        self.ptaddr_query_point_id = ""
         self.without_ptaddr_query = "INNER JOIN RDF_ROAD_LINK ON RDF_ROAD_LINK.LINK_ID = RDF_LINK.LINK_ID"
-        if edge_id:
-            _edge_id = ""
-            for c in edge_id:
-                if _edge_id is not "":
-                    _edge_id += f","
-                _edge_id += f"'{c}'"
-            self.ptaddr_query = f"""INNER JOIN RDF_ROAD_LINK ON RDF_ROAD_LINK.LINK_ID = RDF_LINK.LINK_ID
-            AND RDF_ROAD_LINK.LINK_ID in ({_edge_id})"""
+        if point_id:
+            _point_id = ""
+            for c in point_id:
+                if _point_id is not "":
+                    _point_id += f","
+                _point_id += f"'{c}'"
+            self.ptaddr_query_link_id = f"""INNER JOIN RDF_ROAD_LINK ON RDF_ROAD_LINK.LINK_ID = RDF_LINK.LINK_ID"""
+            self.ptaddr_query_point_id = f"""AND RDF_ADDRESS_POINT.ADDRESS_POINT_ID IN ({_point_id})"""
             self.without_ptaddr_query = ""
 
     def script(self) -> str:
@@ -425,7 +426,7 @@ class QueryPtaddr(QueryObj):
             db_name()
         FROM 
             RDF_LINK
-            {self.ptaddr_query}
+            {self.ptaddr_query_link_id}
             INNER JOIN RDF_ADMIN_PLACE ON RDF_ADMIN_PLACE.ADMIN_PLACE_ID = RDF_LINK.LEFT_ADMIN_PLACE_ID
             INNER JOIN RDF_ADMIN_HIERARCHY ON RDF_ADMIN_HIERARCHY.ADMIN_PLACE_ID = RDF_ADMIN_PLACE.ADMIN_PLACE_ID
                 AND RDF_ADMIN_HIERARCHY.ISO_COUNTRY_CODE = '{self.iso_country_code}'
@@ -433,6 +434,7 @@ class QueryPtaddr(QueryObj):
             {self.without_ptaddr_query}
             INNER JOIN RDF_ADDRESS_POINT ON RDF_ADDRESS_POINT.ROAD_LINK_ID = RDF_ROAD_LINK.ROAD_LINK_ID
                 AND RDF_ADDRESS_POINT.LANGUAGE_CODE = '{self.language_code}'
+                {self.ptaddr_query_point_id}
             INNER JOIN RDF_ROAD_NAME ON RDF_ROAD_NAME.ROAD_NAME_ID = RDF_ROAD_LINK.ROAD_NAME_ID
                 AND RDF_ROAD_NAME.NAME_TYPE='B'
                 AND RDF_ROAD_NAME.IS_EXONYM='N'
@@ -443,6 +445,7 @@ class QueryPtaddr(QueryObj):
             INNER JOIN RDF_FEATURE_NAME ON RDF_FEATURE_NAME.NAME_ID = RDF_FEATURE_NAMES.NAME_ID
                     AND RDF_FEATURE_NAME.LANGUAGE_CODE = RDF_ROAD_NAME.LANGUAGE_CODE
             INNER JOIN RDF_LINK_GEOMETRY ON RDF_LINK_GEOMETRY.LINK_ID = RDF_LINK.LINK_ID
+                    AND RDF_LINK_GEOMETRY.SEQ_NUM = '0'
             LEFT JOIN RDF_POSTAL_AREA ON RDF_LINK.LEFT_POSTAL_AREA_ID = RDF_POSTAL_AREA.POSTAL_AREA_ID 
         ORDER BY
             newid()
@@ -900,6 +903,7 @@ class QueryAllPtaddr(QueryObj):
                 AND RDF_FEATURE_NAME.LANGUAGE_CODE = RDF_ROAD_NAME.LANGUAGE_CODE
             INNER JOIN RDF_LINK_GEOMETRY ON RDF_LINK_GEOMETRY.LINK_ID = RDF_LINK.LINK_ID
             INNER JOIN RDF_ADMIN_HIERARCHY ON RDF_ADMIN_HIERARCHY.ADMIN_PLACE_ID = RDF_ADMIN_PLACE.ADMIN_PLACE_ID
+            and RDF_LINK_GEOMETRY.SEQ_NUM = '0'
             LEFT JOIN RDF_POSTAL_AREA ON RDF_LINK.LEFT_POSTAL_AREA_ID = RDF_POSTAL_AREA.POSTAL_AREA_ID
         WHERE
             RDF_ADMIN_HIERARCHY.ISO_COUNTRY_CODE = '{self.iso_country_code}'

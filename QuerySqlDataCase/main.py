@@ -150,15 +150,15 @@ def query_ptaddr(db: SqlServer, iso_country_code: str, order8_id: str, language_
     for language in language_code:
         ptaddr_query_results = db.query(QueryPtaddr(iso_code=iso_country_code,
                                                     order_8=order8_id,
-                                                    edge_id=list(data.keys()),
+                                                    point_id=list(data.keys()),
                                                     language=language))
         LogUtils.info("Query Ptaddr for country %s ,city:%s ,With language:%s, result count:%s" % (
-            iso_country_code, order8_id, language_code, len(ptaddr_query_results)))
+            iso_country_code, order8_id, language, len(ptaddr_query_results)))
         for result in ptaddr_query_results:
-            if result.EdgeID in data.keys():
-                data[result.EdgeID].load_lange(result)
+            if result.ADDRESS_POINT_ID in data.keys():
+                data[result.ADDRESS_POINT_ID].load_lange(result)
             else:
-                data[result.EdgeID] = PtaddrAllLange(result)
+                data[result.ADDRESS_POINT_ID] = PtaddrAllLange(result)
     return data
 
 
@@ -360,8 +360,8 @@ def debug(debug_dir: str):
     shutil.move(os.path.join(".", "QueryDateCase.log"), f"./{debug_dir}_debug")
 
 
-
 if __name__ == '__main__':
-    # main("HERE_MEA_S231R2", iso_country_code=["SAU"], language_code=["ARA", "ENG"])
+    main("HERE_MEA_S231R4",language_code=["ARA", "ENG"])
     # main("HERE_EEU_S231R2", iso_country_code=["RUS"])
-    main("HERE_EEU_S231R2")
+    # main("HERE_SAM_S231R4")
+    # debug('HERE_MEA_S231R4_2024-01-29_17-43-20')
