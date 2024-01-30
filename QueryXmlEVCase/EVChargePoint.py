@@ -20,6 +20,7 @@ class EVChargePoint:
         'Flow',  # 组合
         'House_Number',
         'StreetName',
+        'PostalCode',
         'PlaceLevel2',
         'PlaceLevel3',
         'PlaceLevel4',
@@ -52,7 +53,8 @@ class EVChargePoint:
                  self.PlaceLevel4,
                  self.CountryCode,
                  self.Entry_Point_Lat,
-                 self.Entry_Point_Lon) = parse_entry_point(node_location)
+                 self.Entry_Point_Lon,
+                 self.PostalCode) = parse_entry_point(node_location)
             elif node_type == 'Display Location':
                 self.Display_Point_Lat, self.Display_Point_Lon = parse_display_point(node_location)
             else:
@@ -74,8 +76,9 @@ class EVChargePoint:
         self.Open_24_Hours = ele.find('Products_Services').find('Open_24_Hours').text
         self.Private_Access = ele.find('Details').find('Private_Access').text
         self.HoursOfOperation = ''
-        if self.Open_24_Hours != 'true':
-            node_hours_of_operation = ele.find('Details').find('HoursOfOperation')
+        node_details = ele.find('Details')
+        if node_details:
+            node_hours_of_operation = node_details.find('HoursOfOperation')
             self.HoursOfOperation = get_hours_of_operation(node_hours_of_operation)
 
     def add_index(self, index: int):
@@ -117,6 +120,7 @@ def parse_entry_point(ele: Element):
     CountryCode = ''
     Entry_Point_Lat = ''
     Entry_Point_Lon = ''
+    PostalCode = ''
     """
     对于MEA SAU street name存在英语和阿语两种 
         存在<Address><ParsedAddress><ParsedStreetAddress><ParsedStreetName><StreetName>下以Language_Code属性区分
@@ -171,13 +175,16 @@ def parse_entry_point(ele: Element):
             PlaceLevel4 += f"{node.get('Trans_Type')}:{node.text}\r\n"
         else:
             LogManager.warning('未登记PlaceLevel4：%s' % node.text)
+    node_postal_code = node_parsed_address.find('PostalCode')
+    if node_postal_code:
+        PostalCode = node_postal_code.find('NT_Postal').text
     PlaceLevel4 = remove_rn(PlaceLevel4)
     CountryCode = node_parsed_address.find('CountryCode').text
     node_GeoPosition = ele.find('GeoPosition')
     Entry_Point_Lat = node_GeoPosition.find('Latitude').text
     Entry_Point_Lon = node_GeoPosition.find('Longitude').text
 
-    return House_Number, StreetName, PlaceLevel2, PlaceLevel3, PlaceLevel4, CountryCode, Entry_Point_Lat, Entry_Point_Lon
+    return House_Number, StreetName, PlaceLevel2, PlaceLevel3, PlaceLevel4, CountryCode, Entry_Point_Lat, Entry_Point_Lon, PostalCode
 
 
 def parse_display_point(ele: Element):
