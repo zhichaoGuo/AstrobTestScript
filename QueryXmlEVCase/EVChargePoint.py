@@ -1,14 +1,20 @@
 from xml.etree.ElementTree import Element
 
 from AstrobTestTool.app.Utils import LogManager
+from QueryXmlEVCase.QueryScript import QueryPlaceInfo
 
 
 class EVChargePoint:
     AllAttr = [
         'CountryCode',
+        'OWN',
+        'AXID',
         'Official_Name',
         'Synonym_Name',
         'index',
+        'House_Number',
+        'StreetName',
+        'PostalCode',
         'Contact',  # 组合
         'TotalNumberOfConnectors',
         'ConnectorTypeName',  # 组合
@@ -18,12 +24,9 @@ class EVChargePoint:
         'Voltage',  # 组合
         'NumberOfPhases',  # 组合
         'Flow',  # 组合
-        'House_Number',
-        'StreetName',
-        'PostalCode',
-        'PlaceLevel2',
-        'PlaceLevel3',
-        'PlaceLevel4',
+        # 'PlaceLevel2',
+        # 'PlaceLevel3',
+        # 'PlaceLevel4',
         'Entry_Point_Lat',
         'Entry_Point_Lon',
         'Display_Point_Lat',
@@ -31,10 +34,11 @@ class EVChargePoint:
         'Open_24_Hours',
         'Private_Access',
         'HoursOfOperation',  # 组合
-        'POI_Entity_ID'
+        'POI_Entity_ID',
+        'MapLinkID'
     ]
 
-    def __init__(self, ele: Element):
+    def __init__(self, ele: Element, sql_database=None):
         self.index = None
         for attr in self.AllAttr:
             setattr(self, attr, '')
@@ -47,14 +51,14 @@ class EVChargePoint:
             node_type = node_location.get('Type')
             if node_type == 'Entry Point':
                 (self.House_Number,
-                 self.StreetName,
-                 self.PlaceLevel2,
-                 self.PlaceLevel3,
-                 self.PlaceLevel4,
                  self.CountryCode,
                  self.Entry_Point_Lat,
                  self.Entry_Point_Lon,
-                 self.PostalCode) = parse_entry_point(node_location)
+                 self.PostalCode,
+                 self.MapLinkID,
+                 self.OWN,
+                 self.AXID,
+                 self.StreetName) = parse_entry_point(node_location, sql_database)
             elif node_type == 'Display Location':
                 self.Display_Point_Lat, self.Display_Point_Lon = parse_display_point(node_location)
             else:
@@ -111,80 +115,91 @@ def get_name(ele: Element):
     return remove_rn(_name), remove_rn(_name1)
 
 
-def parse_entry_point(ele: Element):
+def parse_entry_point(ele: Element, sql_database):
     House_Number = ''
-    StreetName = ''
-    PlaceLevel2 = ''
-    PlaceLevel3 = ''
-    PlaceLevel4 = ''
+    # StreetName = ''
+    # PlaceLevel2 = ''
+    # PlaceLevel3 = ''
+    # PlaceLevel4 = ''
     CountryCode = ''
     Entry_Point_Lat = ''
     Entry_Point_Lon = ''
     PostalCode = ''
+    Link_ID = ''
+    OWN = ''
+    AXID = ''
+    RNA = ''
     """
     对于MEA SAU street name存在英语和阿语两种 
         存在<Address><ParsedAddress><ParsedStreetAddress><ParsedStreetName><StreetName>下以Language_Code属性区分
     对于MEA ISR street name存在希伯来语和音译语言 
         存在<Address><ParsedAddress><ParsedStreetAddress><ParsedStreetName>下以<StreetName>和<Trans_ParsedStreetName><StreetName>
     对于EU ESP street name 
-        存在<Actual_Address_Components><Actual_Street_Name><Actual_Street_Name_Base>中
+        存在<Actual_Address_Components><Actual_Street_Name><Actual_Street_Name_Base>中 经叶张龙确认此节点不解析
     """
     node_parsed_address = ele.find('Address').find('ParsedAddress')
-    node_parsed_street_address = node_parsed_address.find('ParsedStreetAddress')
-    if node_parsed_street_address:
-        node_address_number = node_parsed_street_address.find('Address_Number')
-        if node_address_number:
-            House_Number = node_address_number.find('House_Number').text
-        nodes_parsed_street_name = node_parsed_street_address.findall('ParsedStreetName')
-        for node_parsed_street_name in nodes_parsed_street_name:
-            StreetName += f"{node_parsed_street_name.find('StreetName').text}\r\n"
-            node_trans_parsed_street_name = node_parsed_street_name.find('Trans_ParsedStreetName')
-            if node_trans_parsed_street_name:
-                StreetName += f"{node_trans_parsed_street_name.find('StreetName').text}\r\n"
-    node_actual_address_components = ele.find('Actual_Address_Components')
-    if node_actual_address_components:
-        if len(node_actual_address_components.find('Actual_Street_Name').findall('Actual_Street_Name_Base'))>1:
-            LogManager.error('Actual_Street_Name_Base 数量大于1，需要重构此处解析！')
-        StreetName += f"{node_actual_address_components.find('Actual_Street_Name').find('Actual_Street_Name_Base').text}\r\n"
-    StreetName = remove_rn(StreetName)
+    # node_parsed_street_address = node_parsed_address.find('ParsedStreetAddress')
+    # if node_parsed_street_address:
+    #     node_address_number = node_parsed_street_address.find('Address_Number')
+    #     if node_address_number:
+    #         House_Number = node_address_number.find('House_Number').text
+    #     nodes_parsed_street_name = node_parsed_street_address.findall('ParsedStreetName')
+    #     for node_parsed_street_name in nodes_parsed_street_name:
+    #         StreetName += f"{node_parsed_street_name.find('StreetName').text}\r\n"
+    #         node_trans_parsed_street_name = node_parsed_street_name.find('Trans_ParsedStreetName')
+    #         if node_trans_parsed_street_name:
+    #             StreetName += f"{node_trans_parsed_street_name.find('StreetName').text}\r\n"
+    # node_actual_address_components = ele.find('Actual_Address_Components')
+    # if node_actual_address_components:
+    #     if len(node_actual_address_components.find('Actual_Street_Name').findall('Actual_Street_Name_Base')) > 1:
+    #         LogManager.error('Actual_Street_Name_Base 数量大于1，需要重构此处解析！')
+    #     StreetName += f"{node_actual_address_components.find('Actual_Street_Name').find('Actual_Street_Name_Base').text}\r\n"
+    # StreetName = remove_rn(StreetName)
     """
     对MEA SAU place level 有阿语和英语两种 存在Language_Code区别
     对MEA ISR place level 有希伯来语和音译语言两种 存在Language_Code和Trans_Type区别
     """
     node_parsed_place = node_parsed_address.find('ParsedPlace')
-    for node in node_parsed_place.findall('PlaceLevel2'):
-        if node.get('Language_Code'):
-            PlaceLevel2 += f"{node.get('Language_Code')}:{node.text}\r\n"
-        elif node.get('Trans_Type'):
-            PlaceLevel2 += f"{node.get('Trans_Type')}:{node.text}\r\n"
-        else:
-            LogManager.warning('未登记PlaceLevel2：%s' % node.text)
-    PlaceLevel2 = remove_rn(PlaceLevel2)
-    for node in node_parsed_place.findall('PlaceLevel3'):
-        if node.get('Language_Code'):
-            PlaceLevel3 += f"{node.get('Language_Code')}:{node.text}\r\n"
-        elif node.get('Trans_Type'):
-            PlaceLevel3 += f"{node.get('Trans_Type')}:{node.text}\r\n"
-        else:
-            LogManager.warning('未登记PlaceLevel3：%s' % node.text)
-    PlaceLevel3 = remove_rn(PlaceLevel3)
-    for node in node_parsed_place.findall('PlaceLevel4'):
-        if node.get('Language_Code'):
-            PlaceLevel4 += f"{node.get('Language_Code')}:{node.text}\r\n"
-        elif node.get('Trans_Type'):
-            PlaceLevel4 += f"{node.get('Trans_Type')}:{node.text}\r\n"
-        else:
-            LogManager.warning('未登记PlaceLevel4：%s' % node.text)
+    # for node in node_parsed_place.findall('PlaceLevel2'):
+    #     if node.get('Language_Code'):
+    #         PlaceLevel2 += f"{node.get('Language_Code')}:{node.text}\r\n"
+    #     elif node.get('Trans_Type'):
+    #         PlaceLevel2 += f"{node.get('Trans_Type')}:{node.text}\r\n"
+    #     else:
+    #         LogManager.warning('未登记PlaceLevel2：%s' % node.text)
+    # PlaceLevel2 = remove_rn(PlaceLevel2)
+    # for node in node_parsed_place.findall('PlaceLevel3'):
+    #     if node.get('Language_Code'):
+    #         PlaceLevel3 += f"{node.get('Language_Code')}:{node.text}\r\n"
+    #     elif node.get('Trans_Type'):
+    #         PlaceLevel3 += f"{node.get('Trans_Type')}:{node.text}\r\n"
+    #     else:
+    #         LogManager.warning('未登记PlaceLevel3：%s' % node.text)
+    # PlaceLevel3 = remove_rn(PlaceLevel3)
+    # for node in node_parsed_place.findall('PlaceLevel4'):
+    #     if node.get('Language_Code'):
+    #         PlaceLevel4 += f"{node.get('Language_Code')}:{node.text}\r\n"
+    #     elif node.get('Trans_Type'):
+    #         PlaceLevel4 += f"{node.get('Trans_Type')}:{node.text}\r\n"
+    #     else:
+    #         LogManager.warning('未登记PlaceLevel4：%s' % node.text)
+    # PlaceLevel4 = remove_rn(PlaceLevel4)
     node_postal_code = node_parsed_address.find('PostalCode')
     if node_postal_code:
         PostalCode = node_postal_code.find('NT_Postal').text
-    PlaceLevel4 = remove_rn(PlaceLevel4)
     CountryCode = node_parsed_address.find('CountryCode').text
     node_GeoPosition = ele.find('GeoPosition')
     Entry_Point_Lat = node_GeoPosition.find('Latitude').text
     Entry_Point_Lon = node_GeoPosition.find('Longitude').text
+    node_Map_Link_ID = ele.find('MapLinkID')
+    db = sql_database.get_db_by_iso_cc(CountryCode)
+    if node_Map_Link_ID and db:
+        Link_ID = node_Map_Link_ID.find('LinkID').text
+        OWN, AXID, RNA = get_sql_place_info(Link_ID, db)
+    else:
+        LogManager.error('not find map link id node or db!')
 
-    return House_Number, StreetName, PlaceLevel2, PlaceLevel3, PlaceLevel4, CountryCode, Entry_Point_Lat, Entry_Point_Lon, PostalCode
+    return House_Number, CountryCode, Entry_Point_Lat, Entry_Point_Lon, PostalCode, Link_ID, OWN, AXID, RNA
 
 
 def parse_display_point(ele: Element):
@@ -192,6 +207,30 @@ def parse_display_point(ele: Element):
     Point_Lat = node_GeoPosition.find('Latitude').text
     Point_Lon = node_GeoPosition.find('Longitude').text
     return Point_Lat, Point_Lon
+
+
+def get_sql_place_info(link_id: str, dbs):
+    """返回的结果可能存在多个数据，需要判断一下数量，如果数量大于1，则过滤一下STREET_TYPE=NULL"""
+    place_obj_list = dbs.query(QueryPlaceInfo(link_id))
+    # if len(place_obj_list) > 1:
+    #     new_list = []
+    #     for obj in place_obj_list:
+    #         print(obj.STREET_TYPE)
+    #         if obj.STREET_TYPE is None:
+    #             new_list.append(obj)
+    #         else:
+    #             LogManager.warning('过滤掉结果：RNA=%s,AXID=%s' % (obj.RNA, obj.AXID))
+    #     place_obj_list = new_list
+    OWN = []
+    AXID = ''
+    RNA = []
+    for obj in place_obj_list:
+        if obj.OWN not in OWN:
+            OWN.append(obj.OWN)
+        AXID = obj.AXID
+        if obj.RNA and obj.RNA not in RNA:
+            RNA.append(obj.RNA)
+    return '\r\n'.join(OWN), AXID, '\r\n'.join(RNA)
 
 
 def get_contact(ele: Element):

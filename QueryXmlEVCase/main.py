@@ -6,7 +6,8 @@ import xml.etree.ElementTree as ET
 import openpyxl
 
 from QueryXmlEVCase.EVChargePoint import EVChargePoint
-from Utils import LogUtils, PathUtils, ZipUtils
+from QueryXmlEVCase.QueryScript import QueryISOCountryCode
+from Utils import LogUtils, PathUtils, ZipUtils, SqlServer, load_config
 
 
 def return_all_folder_without_tag(aim_path: str, without_tag: list):
@@ -98,13 +99,44 @@ def write_excel(count_data: dict, write_data: dict, save_name: str):
     # 保存工作表
     # version_name = os.path.basename(save_path)
     # excel_name = save_name
-    excel_name = os.path.join(os.path.dirname(__file__),'case',save_name)
+    excel_name = os.path.join(os.path.dirname(__file__), 'case', save_name)
     wb.save(excel_name)
 
 
+class DbManager:
+    def __init__(self, db_list: list):
+        self.db_obj_dict = {}
+        self.country_code_dict = {}
+        for db in db_list:
+            self.db_obj_dict[db] = SqlServer(**load_config().get("sqlserver"), database=db)
+            self.country_code_dict[db] = self.get_all_country_code(self.db_obj_dict[db])
+
+    def get_all_country_code(self, db):
+        obj = db.query(QueryISOCountryCode())
+        res = []
+        for o in obj:
+            res.append(o.ISO_COUNTRY_CODE)
+        print('get db all country code:%s' % res)
+        return res
+
+    def get_db_by_iso_cc(self, iso_country_code: str):
+        for db_name in self.country_code_dict.keys():
+            if iso_country_code in self.country_code_dict[db_name]:
+                return self.db_obj_dict[db_name]
+        print('can not found iso country code in dbm:%s' % iso_country_code)
+        return None
+
+    def close(self):
+        for db_name in self.db_obj_dict.keys():
+            self.db_obj_dict[db_name].close()
+
+
 if __name__ == '__main__':
-    ev_data_path = 'E:\EVdata\HERE EV Charge Points Static Europe S231_H0'
-    excel_file_name = 'HERE_EU_231H0_20240124_multi.xlsx'
+    ev_data_path = 'E:\EVdata\HERE EV Charge Points Static Asia Pacific S231_H0'
+    excel_file_name = 'HERE_APAC_231H0_20240205_multi.xlsx'
+    sql_db_name = ['HERE_APAC_S231R4']
+    # sql_db_name = []
+    dbm = DbManager(sql_db_name)
     all_country_folder = return_all_folder_without_tag(aim_path=ev_data_path, without_tag=['Reference'])
     count = {}
     data = {}
@@ -121,9 +153,9 @@ if __name__ == '__main__':
         else:
             pool = folder_node
         for node in pool:
-            ev_obj = EVChargePoint(node)
-            ev_obj.add_index(folder_node.index(node)+1)
+            ev_obj = EVChargePoint(node, dbm)
+            ev_obj.add_index(folder_node.index(node) + 1)
             folder_obj.append(ev_obj)
         data[os.path.basename(folder)] = folder_obj
     write_excel(count, data, excel_file_name)
-
+    dbm.close()
