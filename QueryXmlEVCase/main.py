@@ -1,5 +1,8 @@
 import os
+import pickle
 import random
+import shutil
+import time
 
 import xml.etree.ElementTree as ET
 
@@ -7,7 +10,7 @@ import openpyxl
 
 from QueryXmlEVCase.EVChargePoint import EVChargePoint
 from QueryXmlEVCase.QueryScript import QueryISOCountryCode
-from Utils import LogUtils, PathUtils, ZipUtils, SqlServer, load_config
+from Utils import LogUtils, PathUtils, ZipUtils, SqlServer, load_config, ObjUtils
 
 
 def return_all_folder_without_tag(aim_path: str, without_tag: list):
@@ -99,8 +102,8 @@ def write_excel(count_data: dict, write_data: dict, save_name: str):
     # 保存工作表
     # version_name = os.path.basename(save_path)
     # excel_name = save_name
-    excel_name = os.path.join(os.path.dirname(__file__), 'case', save_name)
-    wb.save(excel_name)
+    # excel_name = os.path.join(os.path.dirname(__file__), 'case', save_name)
+    wb.save(save_name)
 
 
 class DbManager:
@@ -131,31 +134,85 @@ class DbManager:
             self.db_obj_dict[db_name].close()
 
 
-if __name__ == '__main__':
-    ev_data_path = 'E:\EVdata\HERE EV Charge Points Static Asia Pacific S231_H0'
-    excel_file_name = 'HERE_APAC_231H0_20240205_multi.xlsx'
-    sql_db_name = ['HERE_APAC_S231R4']
-    # sql_db_name = []
-    dbm = DbManager(sql_db_name)
-    all_country_folder = return_all_folder_without_tag(aim_path=ev_data_path, without_tag=['Reference'])
+def main(ev_data: str, excel_file: str, sql_db: list):
+    time_now = time.strftime('%Y%m%d_%H%M%S', time.localtime(time.time()))
+    work_dir = os.path.join(".", f"{excel_file.split('.')[0]}_{time_now}")
+    if not os.path.exists(os.path.join(".", work_dir)):
+        os.mkdir(os.path.join(".", work_dir))
+        LogUtils.info("Mkdir: %s" % work_dir)
+    dbm = DbManager(sql_db)
+    # 获取所有国家的文件夹路径
+    all_country_folder = return_all_folder_without_tag(aim_path=ev_data, without_tag=['Reference'])
     count = {}
     data = {}
+    # 获取所有文件夹-解压缩-获取所有xml-获取所有节点-过滤节点-保存-处理节点-输出
+    all_node = {}
+    pool_node = {}
     for folder in all_country_folder:
+        # 解压缩
         unzip_all_xml(folder)
         xml_paths = PathUtils.get_path_all_xml(folder)
         folder_node = []
         for xml_path in xml_paths:
             folder_node += return_all_node_in_xml(xml_path)
+
         count[os.path.basename(folder)] = len(folder_node)
-        folder_obj = []
+        all_node[folder] = folder_node
+
         if len(folder_node) > 10:
             pool = random.sample(folder_node, 10)
         else:
             pool = folder_node
-        for node in pool:
+        pool_node[folder] = pool
+    ObjUtils.save_obj(all_node, work_dir, "all_node")
+    for folder in pool_node.keys():
+        for node in pool_node[folder]:
+            node.set('uuid', all_node[folder].index(node)+1)
+    ObjUtils.save_obj(pool_node, work_dir, "pool_node")
+    ObjUtils.save_obj(count, work_dir, "count")
+    ObjUtils.save_obj(sql_db,work_dir,"sql_db")
+    for folder in pool_node.keys():
+        folder_obj = []
+        for node in pool_node[folder]:
             ev_obj = EVChargePoint(node, dbm)
-            ev_obj.add_index(folder_node.index(node) + 1)
+            ev_obj.add_index(all_node[folder].index(node) + 1)
             folder_obj.append(ev_obj)
         data[os.path.basename(folder)] = folder_obj
-    write_excel(count, data, excel_file_name)
+    save_path = os.path.join(work_dir, excel_file)
+    write_excel(count, data, save_path)
     dbm.close()
+
+
+def debug(debug_dir: str):
+    # 从文件中加载实例
+    with open(f'{debug_dir}/all_node.pkl', 'rb') as f:
+        all_node = pickle.load(f)
+    with open(f'{debug_dir}/pool_node.pkl', 'rb') as f:
+        pool_node = pickle.load(f)
+    with open(f'{debug_dir}/count.pkl', 'rb') as f:
+        count = pickle.load(f)
+    with open(f'{debug_dir}/sql_db.pkl', 'rb') as f:
+        sql_db = pickle.load(f)
+    dbm = DbManager(sql_db)
+    data = {}
+    for folder in pool_node.keys():
+        folder_obj = []
+        for node in pool_node[folder]:
+            ev_obj = EVChargePoint(node, dbm)
+            ev_obj.add_index(node.get('uuid'))
+            folder_obj.append(ev_obj)
+        data[os.path.basename(folder)] = folder_obj
+    save_path = os.path.join(f"{debug_dir}", "debug.xlsx")
+    write_excel(count, data, save_path)
+    dbm.close()
+    # shutil.move(os.path.join(".", "QueryDateCase.log"), f"./{debug_dir}_debug")
+
+
+if __name__ == '__main__':
+    ev_data_path = 'E:\EVdata\HERE EV Charge Points Static Asia Pacific S231_H0'
+    excel_file_name = 'HERE_APAC_231H0.xlsx'
+    sql_db_name = []
+    sql_db_name = ['HERE_APAC_S231R4']
+    main(ev_data_path, excel_file_name, sql_db_name)
+    # debug_path = "D:\python\project\AstrobTestScript\QueryXmlEVCase\HERE_APAC_231H0_20240221_143948"
+    # debug(debug_path)

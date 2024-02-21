@@ -1,7 +1,7 @@
 from xml.etree.ElementTree import Element
 
-from AstrobTestTool.app.Utils import LogManager
 from QueryXmlEVCase.QueryScript import QueryPlaceInfo
+from Utils import LogUtils
 
 
 class EVChargePoint:
@@ -62,7 +62,7 @@ class EVChargePoint:
             elif node_type == 'Display Location':
                 self.Display_Point_Lat, self.Display_Point_Lon = parse_display_point(node_location)
             else:
-                LogManager.error('解析Location节点失败，存在未知类型：%s' % node_type)
+                LogUtils.error('解析Location节点失败，存在未知类型：%s' % node_type)
         node_contacts = ele.find('Contacts')
         self.Contact = get_contact(node_contacts)
         node_fuels = ele.find('Products_Services').find('Fuels')
@@ -197,7 +197,7 @@ def parse_entry_point(ele: Element, sql_database):
         Link_ID = node_Map_Link_ID.find('LinkID').text
         OWN, AXID, RNA = get_sql_place_info(Link_ID, db)
     else:
-        LogManager.error('not find map link id node or db!')
+        LogUtils.error('not find map link id node or db!')
 
     return House_Number, CountryCode, Entry_Point_Lat, Entry_Point_Lon, PostalCode, Link_ID, OWN, AXID, RNA
 
@@ -242,7 +242,7 @@ def get_contact(ele: Element):
             if node_number.get('Type') == 'Phone Number':
                 phone += f'{node_number.text}\r\n'
             else:
-                LogManager.warning('还有其他类型的联系方式：%s' % node_number.get('Type'))
+                LogUtils.warning('还有其他类型的联系方式：%s' % node_number.get('Type'))
     return remove_rn(phone)
 
 
