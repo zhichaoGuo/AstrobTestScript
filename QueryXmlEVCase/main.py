@@ -164,13 +164,13 @@ def main(ev_data: str, excel_file: str, sql_db: list):
         else:
             pool = folder_node
         pool_node[folder] = pool
-    ObjUtils.save_obj(all_node, work_dir, "all_node")
+    # ObjUtils.save_obj(all_node, work_dir, "all_node")
     for folder in pool_node.keys():
         for node in pool_node[folder]:
-            node.set('uuid', all_node[folder].index(node)+1)
+            node.set('uuid', all_node[folder].index(node) + 1)
     ObjUtils.save_obj(pool_node, work_dir, "pool_node")
     ObjUtils.save_obj(count, work_dir, "count")
-    ObjUtils.save_obj(sql_db,work_dir,"sql_db")
+    ObjUtils.save_obj(sql_db, work_dir, "sql_db")
     for folder in pool_node.keys():
         folder_obj = []
         for node in pool_node[folder]:
@@ -185,8 +185,8 @@ def main(ev_data: str, excel_file: str, sql_db: list):
 
 def debug(debug_dir: str):
     # 从文件中加载实例
-    with open(f'{debug_dir}/all_node.pkl', 'rb') as f:
-        all_node = pickle.load(f)
+    # with open(f'{debug_dir}/all_node.pkl', 'rb') as f:
+    #     all_node = pickle.load(f)
     with open(f'{debug_dir}/pool_node.pkl', 'rb') as f:
         pool_node = pickle.load(f)
     with open(f'{debug_dir}/count.pkl', 'rb') as f:
@@ -209,10 +209,21 @@ def debug(debug_dir: str):
 
 
 if __name__ == '__main__':
-    ev_data_path = 'E:\EVdata\HERE EV Charge Points Static Asia Pacific S231_H0'
-    excel_file_name = 'HERE_APAC_231H0.xlsx'
-    sql_db_name = []
-    sql_db_name = ['HERE_APAC_S231R4']
+    # APAC=============================
+    # ev_data_path = 'E:\EVdata\HERE EV Charge Points Static Asia Pacific S231_H0'
+    # sql_db_name = ['HERE_APAC_S231R4']
+    # excel_file_name = 'HERE_APAC_231H0.xlsx'
+    # MEA==============================
+    # ev_data_path = 'E:\EVdata\HERE EV Charge Points Static MEA S231_H0'
+    # sql_db_name = ['HERE_MEA_S231R4']
+    # excel_file_name = 'HERE_MEA_231H0.xlsx'
+    # EU===============================
+    ev_data_path = 'E:\EVdata\HERE EV Charge Points Static Europe S231_H0'
+    sql_db_name = ['HERE_WEU_S231R4', 'HERE_EEU_S231R4']
+    excel_file_name = 'HERE_EU_231H0.xlsx'
+
+    # sql_db_name = []
+
     main(ev_data_path, excel_file_name, sql_db_name)
-    # debug_path = "D:\python\project\AstrobTestScript\QueryXmlEVCase\HERE_APAC_231H0_20240221_143948"
+    # debug_path = "D:\python\project\AstrobTestScript\QueryXmlEVCase\HERE_APAC_231H0_20240221_154816"
     # debug(debug_path)

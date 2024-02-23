@@ -36,7 +36,7 @@ class QueryPlaceInfo(QueryObj):
         where (RDF_FEATURE_NAME.LANGUAGE_CODE = RDF_ROAD_NAME.LANGUAGE_CODE
             or RDF_ROAD_NAME.STREET_NAME IS NULL)
         ORDER BY
-            ROUTE_TYPE DESC,
+            ROUTE_TYPE ASC,
             IS_NAME_ON_ROADSIGN DESC
                 '''
         return script

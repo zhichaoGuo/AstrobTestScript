@@ -117,7 +117,7 @@ def get_name(ele: Element):
 
 def parse_entry_point(ele: Element, sql_database):
     House_Number = ''
-    # StreetName = ''
+    StreetName = []
     # PlaceLevel2 = ''
     # PlaceLevel3 = ''
     # PlaceLevel4 = ''
@@ -128,7 +128,7 @@ def parse_entry_point(ele: Element, sql_database):
     Link_ID = ''
     OWN = ''
     AXID = ''
-    RNA = ''
+    RNA = []
     """
     对于MEA SAU street name存在英语和阿语两种 
         存在<Address><ParsedAddress><ParsedStreetAddress><ParsedStreetName><StreetName>下以Language_Code属性区分
@@ -138,17 +138,17 @@ def parse_entry_point(ele: Element, sql_database):
         存在<Actual_Address_Components><Actual_Street_Name><Actual_Street_Name_Base>中 经叶张龙确认此节点不解析
     """
     node_parsed_address = ele.find('Address').find('ParsedAddress')
-    # node_parsed_street_address = node_parsed_address.find('ParsedStreetAddress')
-    # if node_parsed_street_address:
-    #     node_address_number = node_parsed_street_address.find('Address_Number')
-    #     if node_address_number:
-    #         House_Number = node_address_number.find('House_Number').text
-    #     nodes_parsed_street_name = node_parsed_street_address.findall('ParsedStreetName')
-    #     for node_parsed_street_name in nodes_parsed_street_name:
-    #         StreetName += f"{node_parsed_street_name.find('StreetName').text}\r\n"
-    #         node_trans_parsed_street_name = node_parsed_street_name.find('Trans_ParsedStreetName')
-    #         if node_trans_parsed_street_name:
-    #             StreetName += f"{node_trans_parsed_street_name.find('StreetName').text}\r\n"
+    node_parsed_street_address = node_parsed_address.find('ParsedStreetAddress')
+    if node_parsed_street_address:
+        node_address_number = node_parsed_street_address.find('Address_Number')
+        if node_address_number:
+            House_Number = node_address_number.find('House_Number').text
+        nodes_parsed_street_name = node_parsed_street_address.findall('ParsedStreetName')
+        for node_parsed_street_name in nodes_parsed_street_name:
+            StreetName.append(node_parsed_street_name.find('StreetName').text)
+            node_trans_parsed_street_name = node_parsed_street_name.find('Trans_ParsedStreetName')
+            if node_trans_parsed_street_name:
+                StreetName.append(node_trans_parsed_street_name.find('StreetName').text)
     # node_actual_address_components = ele.find('Actual_Address_Components')
     # if node_actual_address_components:
     #     if len(node_actual_address_components.find('Actual_Street_Name').findall('Actual_Street_Name_Base')) > 1:
@@ -198,8 +198,12 @@ def parse_entry_point(ele: Element, sql_database):
         OWN, AXID, RNA = get_sql_place_info(Link_ID, db)
     else:
         LogUtils.error('not find map link id node or db!')
+    for rna in StreetName:
+        if rna not in RNA:
+            RNA.append(rna)
+    # RNA.extend(StreetName)
 
-    return House_Number, CountryCode, Entry_Point_Lat, Entry_Point_Lon, PostalCode, Link_ID, OWN, AXID, RNA
+    return House_Number, CountryCode, Entry_Point_Lat, Entry_Point_Lon, PostalCode, Link_ID, '\r\n'.join(OWN), AXID, '\r\n'.join(RNA[:2])
 
 
 def parse_display_point(ele: Element):
@@ -209,7 +213,7 @@ def parse_display_point(ele: Element):
     return Point_Lat, Point_Lon
 
 
-def get_sql_place_info(link_id: str, dbs):
+def get_sql_place_info(link_id: str, dbs)->(list,str,list):
     """返回的结果可能存在多个数据，需要判断一下数量，如果数量大于1，则过滤一下STREET_TYPE=NULL"""
     place_obj_list = dbs.query(QueryPlaceInfo(link_id))
     # if len(place_obj_list) > 1:
@@ -230,7 +234,7 @@ def get_sql_place_info(link_id: str, dbs):
         AXID = obj.AXID
         if obj.RNA and obj.RNA not in RNA:
             RNA.append(obj.RNA)
-    return '\r\n'.join(OWN), AXID, '\r\n'.join(RNA)
+    return OWN, AXID, RNA
 
 
 def get_contact(ele: Element):
