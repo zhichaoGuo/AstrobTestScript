@@ -134,7 +134,7 @@ class DbManager:
             self.db_obj_dict[db_name].close()
 
 
-def main(ev_data: str, excel_file: str, sql_db: list):
+def main(ev_data: str, excel_file: str, sql_db: list,pre_country_count:int=10):
     time_now = time.strftime('%Y%m%d_%H%M%S', time.localtime(time.time()))
     work_dir = os.path.join(".", f"{excel_file.split('.')[0]}_{time_now}")
     if not os.path.exists(os.path.join(".", work_dir)):
@@ -155,12 +155,11 @@ def main(ev_data: str, excel_file: str, sql_db: list):
         folder_node = []
         for xml_path in xml_paths:
             folder_node += return_all_node_in_xml(xml_path)
-
         count[os.path.basename(folder)] = len(folder_node)
         all_node[folder] = folder_node
 
-        if len(folder_node) > 10:
-            pool = random.sample(folder_node, 10)
+        if len(folder_node) > pre_country_count:
+            pool = random.sample(folder_node, pre_country_count)
         else:
             pool = folder_node
         pool_node[folder] = pool
@@ -209,6 +208,7 @@ def debug(debug_dir: str):
 
 
 if __name__ == '__main__':
+    country_count=10
     # APAC=============================
     # ev_data_path = 'E:\EVdata\HERE EV Charge Points Static Asia Pacific S231_H0'
     # sql_db_name = ['HERE_APAC_S231R4']
@@ -218,12 +218,16 @@ if __name__ == '__main__':
     # sql_db_name = ['HERE_MEA_S231R4']
     # excel_file_name = 'HERE_MEA_231H0.xlsx'
     # EU===============================
-    ev_data_path = 'E:\EVdata\HERE EV Charge Points Static Europe S231_H0'
-    sql_db_name = ['HERE_WEU_S231R4', 'HERE_EEU_S231R4']
-    excel_file_name = 'HERE_EU_231H0.xlsx'
-
+    # ev_data_path = 'E:\EVdata\HERE EV Charge Points Static South America S231_H0'
+    sql_db_name = ['HERE_SAM_S231R4']
+    excel_file_name = 'HERE_SAM_231H0.xlsx'
+    # IND==============================
+    ev_data_path = 'E:\EVdata\HERE EV Charge Points Static India S231_H0'
+    sql_db_name = ['HERE_IND_S231R4']
+    excel_file_name = 'HERE_IND_231H0.xlsx'
+    country_count = 30
     # sql_db_name = []
 
-    main(ev_data_path, excel_file_name, sql_db_name)
+    main(ev_data_path, excel_file_name, sql_db_name,pre_country_count=country_count)
     # debug_path = "D:\python\project\AstrobTestScript\QueryXmlEVCase\HERE_APAC_231H0_20240221_154816"
     # debug(debug_path)
