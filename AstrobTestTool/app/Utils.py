@@ -32,27 +32,28 @@ class ConfigManager:
             yaml.dump(config_obj, configfile)
 
 
-def get_save_path(window, file_buf, file_methd):
+def get_save_path(window, file_method):
     try:
         file_name = '[' + str(datetime.now())[5:].replace(":", "·").replace("-", "").split(".")[0].replace(" ", "]")
         file_name = file_name.split(']')[0] + f']' + file_name.split(']')[1]
-        filePath = QFileDialog.getSaveFileName(window, '保存路径', f'{abspath(".")}\\screen\\{file_name}.{file_methd}',
-                                               f'.{file_methd}(*.{file_methd})')
-        try:
-            # with open(filePath[0], "wb") as f:
-            #     f.write(file_buf)
-            # f.close()
-            window.show_message('保存%s文件成功' % file_methd)
-            from os import system
-            thread = Thread(target=system, args=[f"{filePath[0]}", ])
-            thread.setDaemon(True)
-            thread.start()
-            return filePath[0]
-        except FileNotFoundError:
-            window.show_message('取消保存%s文件' % file_methd)
+        filePath = QFileDialog.getSaveFileName(window, '保存路径', f'{abspath(".")}\\screen\\{file_name}.{file_method}',
+                                               f'.{file_method}(*.{file_method})')
+
+        return filePath[0]
     except TypeError:
-        window.show_message('save_file:TypeError', 1)
+        print('save_file:TypeError', 1)
         return False
+
+
+def open_save_file(file_path):
+    try:
+        from os import system
+        thread = Thread(target=system, args=[f"{file_path}", ])
+        thread.setDaemon(True)
+        thread.start()
+        return file_path
+    except FileNotFoundError:
+        print('%s文件不存在' % file_path)
 
 
 class LogManager:

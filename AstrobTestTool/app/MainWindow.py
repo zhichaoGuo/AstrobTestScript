@@ -6,7 +6,7 @@ from PySide2.QtCore import Qt, Slot
 from PySide2.QtWidgets import QMainWindow
 
 from AstrobTestTool.app.Device import DevicesManager, DeviceThread
-from AstrobTestTool.app.Utils import ConfigManager, LogManager
+from AstrobTestTool.app.Utils import ConfigManager, LogManager, get_save_path
 from AstrobTestTool.ui.MainWindowUI import Ui_MainWindow
 
 
@@ -71,9 +71,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.device_thread = None
             self.devices_manager.close_device()
             self.device = None
+            self.f_btn_refresh_devices()
+            self.update_devices_display_id([])
         else:
             btn_text = '断开设备'
-            self.device = self.devices_manager.get_device(self.device_thread.device_uuid)
         self.btn_connect_device.setText(btn_text)
 
     @Slot(list)
@@ -82,7 +83,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.box_display_id.addItems(display_id_list)
 
     @Slot(object)
-    def set_device(self,device):
+    def set_device(self, device):
         self.device = device
 
     def all_button_status(self, status: bool):
@@ -122,12 +123,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.device_thread.running_status = False
 
     def f_btn_screen_cap(self):
-        # 起新线程下载syslog
-        thread = Thread(target=self.device.screen_cap, args=[self.box_screencap_save_path.currentText(), 'testtool.png', '0', ])
-        # 设置成守护线程
-        thread.setDaemon(True)
-        # 启动线程
-        thread.start()
-        self.update_device_info('正在保存截图')
-
-        print('pika')
+        file_path = get_save_path(self, 'png')
+        display_id = self.box_display_id.currentText()
+        if not display_id:
+            self.update_device_info('未选中屏幕id')
+            return None
+        if file_path:
+            # 起新线程下载syslog
+            thread = Thread(target=self.device.screen_cap,
+                            args=[self.box_screencap_save_path.currentText(), 'testtool.png', file_path, display_id, ])
+            # 设置成守护线程
+            thread.setDaemon(True)
+            # 启动线程
+            thread.start()
+            self.update_device_info('保存截图成功')
+        else:
+            self.update_device_info('')

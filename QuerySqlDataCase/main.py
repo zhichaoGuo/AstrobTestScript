@@ -361,7 +361,28 @@ def debug(debug_dir: str):
 
 
 if __name__ == '__main__':
-    main("HERE_MEA_S231R4",language_code=["ARA", "ENG"])
+    # ----------------MEA------------------------------------
+    # main("HERE_MEA_S241R1", language_code=["ARA", "ENG"])
+
+    main("HERE_MEA_S241R1", iso_country_code=["ARE", "BHR", "KWT", "OMN", "QAT", "SAU"], language_code=["ARA", "ENG"])
+    # ----------------RUS------------------------------------
     # main("HERE_EEU_S231R2", iso_country_code=["RUS"])
-    # main("HERE_SAM_S231R4")
+    # main("HERE_EEU_S231R4", iso_country_code=["RUS","UKR"]) # 克里米亚要单独处理 查询语句在EEU S231R4
+    # 克里米亚地区RDF_CITY_POI.ORDER8_ID = '23672201'
+    # ----------------APAC-----------------------------------
+    # main("HERE_APAC_S241R1")
+    # ----------------APAC_SA_OL------------------------------
+    # main("HERE_APAC_S241R1", iso_country_code=["IDN", "MYS", "THA"])
+    # main("HERE_HKG_S231R4")
+    # ------------------AF---------------------------
+    # main("HERE_MEA_S231R4",
+    #      iso_country_code=["AFG", "AGO", "BDI", "BEN", "BFA", "BWA", "CAF", "CIV", "CMR", "COD", "COG", "COM", "CPV",
+    #                        "DJI", "DZA", "EGY", "ERI", "ESH", "ETH", "GAB", "GHA", "GIN", "GMB", "GNB", "GNQ", "KEN",
+    #                        "LBR", "LBY", "LSO", "MAR", "MDG", "MLI", "MOZ", "MRT", "MUS", "MWI", "MYT",
+    #                        "NAM", "NER", "NGA", "REU", "RWA",
+    #                        "SDN", "SEN", "SHN", "SLE", "SOM", "SSD", "STP", "SWZ", "SYC",
+    #                        "TCD", "TGO", "TUN", "TZA", "UGA", "ZAF", "ZMB", "ZWE"])
+    # -------------------IND--------------------------
+    # main("HERE_IND_S231R4")
+
     # debug('HERE_MEA_S231R4_2024-01-29_17-43-20')
